@@ -32,10 +32,15 @@ package org.firstinspires.ftc.teamcode;
 import android.app.Activity;
 import android.view.View;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 /*
  *
@@ -50,92 +55,216 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Autonomous(name = "Sensor: MR Color", group = "Sensor")
+@Autonomous(name = "Sensor: MR Color Red Close", group = "Sensor")
 //@Disabled
 public class SensorMRColor extends LinearOpMode {
+    public static final double JEWEL_SPEED = 0.35;
+    public static final int JEWEL_TIME = 500;
+    public static final double CR_DOWN = -0.75;
+    ColorSensor colorSensor2;    // Hardware Device Object
+    private DcMotor leftDrive = null;
+    private DcMotor rightDrive = null;
+    private DcMotor backmotorleft=null;
+    private DcMotor backmotorright=null;
+    private Servo servotest=null;
+    private BNO055IMU imu;
+    private DcMotor armDrive1;
+    private DcMotor armDrive2;
 
-  ColorSensor colorSensor;    // Hardware Device Object
-  private DcMotor leftDrive = null;
-  private DcMotor rightDrive = null;
-
-
-  @Override
-  public void runOpMode() {
-
-    // hsvValues is an array that will hold the hue, saturation, and value information.
-    float hsvValues[] = {0F,0F,0F};
-
-    // values is a reference to the hsvValues array.
-    final float values[] = hsvValues;
-
-    // get a reference to the RelativeLayout so we can change the background
-    // color of the Robot Controller app to match the hue detected by the RGB sensor.
-    int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
-    final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
-
-    // bPrevState and bCurrState represent the previous and current state of the button.
-    boolean bPrevState = false;
-    boolean bCurrState = false;
-
-    // bLedOn represents the state of the LED.
-    boolean bLedOn = true;
-
-    // get a reference to our ColorSensor object.
-    colorSensor = hardwareMap.get(ColorSensor.class, "colorsensor");
-    leftDrive = hardwareMap.get(DcMotor.class, "motorleft");
-    rightDrive = hardwareMap.get(DcMotor.class, "motorright");
-
-    // Set the LED in the beginning
-    colorSensor.enableLed(bLedOn);
-
-    // wait for the start button to be pressed.
-    waitForStart();
-
-    // while the op mode is active, loop and read the RGB data.
-    // Note we use opModeIsActive() as our loop condition because it is an interruptible method.
-    while (opModeIsActive()) {
+    //private TouchSensor digitaltouch=null;
+    @Override
+    public void runOpMode() {
+        // leftDrive.setDirection(DcMotor.Direction.FORWARD);
+        //rightDrive.setDirection(DcMotor.Direction.REVERSE);
 
 
-      //if (colorSensor.red()>colorSensor.blue())
+        // get a reference to our ColorSensor object.
+        colorSensor2 = hardwareMap.get(ColorSensor.class, "colorsensor2");
+        leftDrive = hardwareMap.get(DcMotor.class, "motorleft");
+        rightDrive = hardwareMap.get(DcMotor.class, "motorright");
+        backmotorleft = hardwareMap.get(DcMotor.class, "backmotorleft");
+        backmotorright = hardwareMap.get(DcMotor.class, "backmotorright");
+        servotest = hardwareMap.get(Servo.class, "servotest");
+                                                                                                               armDrive1 = hardwareMap.get(DcMotor.class, "armmotor1");
+        armDrive2 = hardwareMap.get(DcMotor.class, "armmotor2");
+        //digitaltouch=hardwareMap.get(TouchSensor.class, "digitaltouch")
 
-        //leftDrive.setPower(1.0);
-        //rightDrive.setPower(-1);
-      //sleep(1000);
-      if (colorSensor.red()<colorSensor.blue())
-         leftDrive.setPower(-1);
-      rightDrive.setPower(1);
-      sleep(1000);
-      // check the status of the x button on either gamepad.
+        armDrive2.setDirection(DcMotor.Direction.FORWARD);
+        armDrive1.setDirection(DcMotor.Direction.FORWARD);
+        backmotorleft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backmotorright.setDirection(DcMotorSimple.Direction.FORWARD);
 
-      // convert the RGB values to HSV values.
-      //Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
+        //
+//colorSensor2 = hardwareMap.colorSensor.get("color");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
-      // send the info back to driver station using telemetry function.
-      telemetry.addData("LED", bLedOn ? "On" : "Off");
-      telemetry.addData("Clear", colorSensor.alpha());
-      telemetry.addData("Red  ", colorSensor.red());
-      telemetry.addData("Green", colorSensor.green());
-      telemetry.addData("Blue ", colorSensor.blue());
-      telemetry.addData("Hue", hsvValues[0]);
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
 
-      // change the background color to match the color detected by the RGB sensor.
-      // pass a reference to the hue, saturation, and value array as an argument
-      // to the HSVToColor method.
-    //  relativeLayout.post(new Runnable() {
-        //public void run() {
-      //    relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values));
+// wait for the start button to be pressed.
+        waitForStart();
+
+
+        //leftDrive.setPower(0);
+        //  rightDrive.setPower(0);
+
+        int firsttime = 1;
+
+        double speed = 0;
+        while (opModeIsActive()) {
+
+
+            setDriveSpeed(0.35, 0.35);
+            sleep(1000);
+
+
+            backmotorleft.setPower(.5);
+            backmotorright.setPower(.5);
+            sleep(700);
+
+            backmotorleft.setPower(0);
+            backmotorright.setPower(0);
+            sleep(700);
+
+            setDriveSpeed(-0.35, -0.35);
+            sleep(1700);
+
+            setDriveSpeed(0, 0);
+            sleep(600);
+
+
+
+            telemetry.addData("Color", "" + colorSensor2.red() + " / " + colorSensor2.green() + " / " + colorSensor2.blue());
+            telemetry.update();
+            colorSensor2.red();
+            colorSensor2.blue();
+            colorSensor2.green();
+
+            while (isGray()) {
+                setDriveSpeed(speed, speed);
+                speed += 0.02;
+                if (speed > 1) {
+                    speed = 1;
+                }
+                sleep(100);
+                telemetry.addData("Color", "gray");
+                telemetry.update();
+            }
+
+            telemetry.addData("Color", "not gray");
+            telemetry.update();
+
+            setDriveSpeed(0, 0);
+          //   setDriveSpeed(0.25, 0.25);
+            // sleep(750);
+            while (isGray()) {
+                setDriveSpeed(speed, speed);
+                speed += 0.015;
+                if (speed > 1) {
+                    speed = 1;
+                }
+                sleep(100);
+                telemetry.addData("Color", "gray");
+                telemetry.update();
+            }
+
+            telemetry.addData("Color", "not gray");
+            telemetry.update();
+
+            setDriveSpeed(0, 0);
+
+
+            final double HEADING_EPSILON = 1.5;
+            final double TURN_SPEED = 0.25;
+
+            while (Math.abs(getHeading() + 50 ) > HEADING_EPSILON)
+         //MIDDLE       while (Math.abs(getHeading() + 100 ) > HEADING_EPSILON) *THIS VALUE IS NOT EXACT
+         //LEFT           while (Math.abs(getHeading() + 120 ) > HEADING_EPSILON) *THIS VALUE IS NOT EXACT
+
+
+                {
+                setDriveSpeed(TURN_SPEED, -TURN_SPEED);
+                telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
+                telemetry.update();
+
+
+                while (Math.abs(getHeading() + 50) > HEADING_EPSILON) {
+                    setDriveSpeed(TURN_SPEED, -TURN_SPEED);
+                    telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
+                    telemetry.update();
+                }
+                setDriveSpeed(0, 0);
+                setDriveSpeed(0.2, 0.2);
+                sleep(1400);
+
+                armDrive1.setPower(-0.8);
+                armDrive2.setPower(-0.8);
+                sleep(1000);
+
+                armDrive1.setPower(0);
+                armDrive2.setPower(0);
+                sleep(1000);
+
+                setDriveSpeed(-0.3, -0.3);
+                sleep(200);
+
+                setDriveSpeed(0, 0);
+                sleep(1000);
+
+                while (true) {
+                    telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
+                    telemetry.update();
+                }
+
+
+            }
         }
-   //});
+    }
+    boolean isGray() {
+        final double COLOR_EPSILON = 60;
 
-      telemetry.update();
+        if (Math.abs(colorSensor2.red() - colorSensor2.blue()) > COLOR_EPSILON) {
+            return false;
+        }
+
+        if (Math.abs(colorSensor2.red() - colorSensor2.green()) > COLOR_EPSILON) {
+            return false;
+        }
+
+        if (Math.abs(colorSensor2.blue() - colorSensor2.green()) > COLOR_EPSILON) {
+            return false;
+        }
+
+        // must be gray
+        return true;
     }
 
-    // Set the panel back to the default color
-    //relativeLayout.post(new Runnable() {
-      //public void run() {
-      //  relativeLayout.setBackgroundColor(Color.WHITE);
-      }
-    //});
+    double getHeading() {
+        return imu.getAngularOrientation().firstAngle;
+    }
 
-  //}
-  //        }
+    void setDriveSpeed(double left, double right) {
+        leftDrive.setPower(left);
+//        leftDrive2.setPower(left * 0.9);
+        rightDrive.setPower(-right);
+//        rightDrive2.setPower(right * 0.9);
+    }
+    void setBackSpeed (double left, double right) {
+        backmotorleft.setPower(-left);
+//        leftDrive2.setPower(left * 0.9);
+        backmotorright.setPower(right);
+//        rightDrive2.setPower(right * 0.9);
+}}
+//});
+
+//}
+//        }
