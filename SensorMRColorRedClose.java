@@ -35,6 +35,7 @@ import android.view.View;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -57,7 +58,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
  */
 @Autonomous(name = "Sensor: MR Color Red Close", group = "Sensor")
 //@Disabled
-public class SensorMRColor extends LinearOpMode {
+public class SensorMRColorRedClose extends LinearOpMode {
     public static final double JEWEL_SPEED = 0.35;
     public static final int JEWEL_TIME = 500;
     public static final double CR_DOWN = -0.75;

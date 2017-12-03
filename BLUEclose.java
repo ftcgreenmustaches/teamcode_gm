@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -17,7 +18,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 @Autonomous(name="BLUEclose", group="Linear Opmode")
-//@Disabled
+@Disabled
 public class BLUEclose extends LinearOpMode {
 
     public static final double JEWEL_SPEED = 0.35;
