@@ -69,9 +69,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Autonomous(name = "REDCLOSEtest", group = "Sensor")
+@Autonomous(name = "BlueCLOSEtest", group = "Sensor")
 //@Disabled
-public class REDCLOSEtest extends LinearOpMode {
+public class BlueCLOSEtest extends LinearOpMode {
     public static final double JEWEL_SPEED = 0.35;
     public static final int JEWEL_TIME = 500;
     public static final double CR_DOWN = -0.75;
@@ -174,43 +174,37 @@ public class REDCLOSEtest extends LinearOpMode {
                 servotest.setPosition(0.175);
                 setDriveSpeed(0, 0);
                 sleep(1000);
-                if (colorsensor.red() > colorsensor.blue()) {
+                if (colorsensor.red() < colorsensor.blue()) {
+                    servoturn.setPosition(.3);
+                    sleep(1000);
+                    servotest.setPosition(.3);
+                    sleep(1000);
+                    servoturn.setPosition(0.5);
+                    sleep(1000);
+                } else {
+                    servoturn.setPosition(.7);
+                    sleep(1000);
+                    servotest.setPosition(.3);
+                    sleep(1000);
+                    servoturn.setPosition(0.5);
+                    sleep(1000);
+                }
 
-                        servoturn.setPosition(.3);
-                        sleep(1000);
-                        servotest.setPosition(.3);
-                        sleep(1000);
-                        servoturn.setPosition(0.5);
-                        sleep(1000);
-                    } else {
-                        servoturn.setPosition(.7);
-                        sleep(1000);
-                        servotest.setPosition(.3);
-                        sleep(1000);
-                        servoturn.setPosition(0.5);
-                        sleep(1000);
-                    }
 
                 servotest.setPosition(1);
                 sleep(2000);
 
-                setDriveSpeed(0.35, 0.35);
+                setDriveSpeed(-0.35, -0.35);
                 sleep(1000);
 
 
-                backmotorleft.setPower(.5);
-                backmotorright.setPower(.5);
+                backmotorleft.setPower(-.5);
+                backmotorright.setPower(-.5);
                 sleep(600);
 
-                backmotorleft.setPower(0);
-                backmotorright.setPower(0);
-                sleep(500);
 
-                setDriveSpeed(-0.35, -0.35);
-                sleep(1800);
-
-                setDriveSpeed(0, 0);
-                sleep(600);
+                setDriveSpeed(0.35, 0.35);
+                sleep(1500);
 
 
                 telemetry.addData("Color", "" + colorsensor2.red() + " / " + colorsensor2.green() + " / " + colorsensor2.blue());
@@ -219,77 +213,78 @@ public class REDCLOSEtest extends LinearOpMode {
                 colorsensor2.blue();
                 colorsensor2.green();
 
-
                 while (isGray()) {
-                    setDriveSpeed(speed, speed);
-                    speed += 0.015;
-                    if (speed > 1) {
-                        speed = 1;
-                    }
-                    sleep(100);
-                    telemetry.addData("Color", "gray");
+                    setDriveSpeed(-.2, -.2);
+                    // setDriveSpeed(speed, speed);
+                    //speed += -0.015;
+                    //if (speed > -1) {
+                    //  speed = -1;
+                }
+                sleep(100);
+                telemetry.addData("Color", "gray");
+                telemetry.update();
+            }
+//added by ajay on 12/5 to see if it behaves differently if it does not find
+            else
+            {
+                setDriveSpeed(-1, -1);
+                sleep(500);
+            }
+
+            telemetry.addData("Color", "not gray");
+            telemetry.update();
+
+            setDriveSpeed(0, 0);
+
+
+            final double HEADING_EPSILON = 1.5;
+            final double TURN_SPEED = 0.25;
+
+            if (vuMark == RelicRecoveryVuMark.RIGHT) {
+                setDriveSpeed(-0.4, -0.4);
+                sleep(475);
+                setDriveSpeed(0, 0);
+                sleep(1000);
+                while (Math.abs(getHeading() + 60) > HEADING_EPSILON) ///Right
+                {
+                    setDriveSpeed(TURN_SPEED, -TURN_SPEED);
+                    telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
                     telemetry.update();
                 }
+            } else if (vuMark == RelicRecoveryVuMark.LEFT) {
 
-                telemetry.addData("Color", "not gray");
-                telemetry.update();
-
-                setDriveSpeed(0, 0);
-
-
-                final double HEADING_EPSILON = 1.5;
-                final double TURN_SPEED = 0.25;
-
-if (vuMark == RelicRecoveryVuMark.RIGHT) {
-    while (Math.abs(getHeading() + 80) > HEADING_EPSILON) ///Right
-        {
-        setDriveSpeed(TURN_SPEED, -TURN_SPEED);
-        telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
-        telemetry.update();
-    }
-}
-                else if (vuMark == RelicRecoveryVuMark.LEFT) {
-    setDriveSpeed(0.4, 0.4);
-    sleep(475);
-    setDriveSpeed(0,0);
-    sleep(1000);
-    while (Math.abs(getHeading() + 65 ) > HEADING_EPSILON)
-                    {
-                        setDriveSpeed(TURN_SPEED, -TURN_SPEED);
-                        telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
-                        telemetry.update();
-                    }
+                while (Math.abs(getHeading() + 20) > HEADING_EPSILON) {
+                    setDriveSpeed(TURN_SPEED, -TURN_SPEED);
+                    telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
+                    telemetry.update();
                 }
-
-              else  {
-                   while (Math.abs(getHeading() + 60 ) > HEADING_EPSILON)
-                    {
-                        setDriveSpeed(TURN_SPEED, -TURN_SPEED);
-                        telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
-                        telemetry.update();
-                    }
+            } else {
+                while (Math.abs(getHeading() + 60) > HEADING_EPSILON) {
+                    setDriveSpeed(TURN_SPEED, -TURN_SPEED);
+                    telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
+                    telemetry.update();
                 }
-
-                setDriveSpeed(0, 0);
-                setDriveSpeed(0.2, 0.2);
-                sleep(1400);
-
-                armDrive1.setPower(-0.8);
-                armDrive2.setPower(-0.8);
-                sleep(1000);
-
-                armDrive1.setPower(0);
-                armDrive2.setPower(0);
-                sleep(1000);
-
-                setDriveSpeed(-0.3, -0.3);
-                sleep(200);
-
-                setDriveSpeed(0, 0);
-                sleep(1000);
-
-
             }
+
+            setDriveSpeed(0, 0);
+            setDriveSpeed(0.2, 0.2);
+            sleep(1400);
+
+            armDrive1.setPower(-0.8);
+            armDrive2.setPower(-0.8);
+            sleep(1000);
+
+            armDrive1.setPower(0);
+            armDrive2.setPower(0);
+            sleep(1000);
+
+            setDriveSpeed(-0.3, -0.3);
+            sleep(200);
+
+            setDriveSpeed(0, 0);
+            sleep(1000);
+
+
         }
     }
 

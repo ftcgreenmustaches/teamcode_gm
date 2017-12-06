@@ -174,23 +174,26 @@ public class REDFARtest extends LinearOpMode {
 
 
                 sleep(1000);
-                servotest.setPosition(0);
+                servotest.setPosition(0.175);
                 setDriveSpeed(0, 0);
                 sleep(1000);
-                if (colorsensor.red() > colorsensor.blue()) {
+                if (colorsensor.red() < colorsensor.blue())  {
                     servoturn.setPosition(.3);
                     sleep(1000);
-                    servoturn.setPosition(.5);
+                    servotest.setPosition(.3);
+                    sleep(1000);
+                    servoturn.setPosition(0.5);
                     sleep(1000);
                 } else {
                     servoturn.setPosition(.7);
                     sleep(1000);
-                    servoturn.setPosition(.5);
+                    servotest.setPosition(.3);
                     sleep(1000);
-
+                    servoturn.setPosition(0.5);
+                    sleep(1000);
                 }
 
-                servotest.setPosition(0.5);
+                servotest.setPosition(1);
                 sleep(2000);
 
                 setDriveSpeed(0.35, 0.35);

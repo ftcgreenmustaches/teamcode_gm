@@ -190,7 +190,16 @@ public class Teleop2drivers extends LinearOpMode {
             }
 
 
-
+        if (gamepad1.right_bumper) {
+            leftDrive.setPower(.35);
+        rightDrive.setPower(-0.35);
+            }else if (gamepad1.left_bumper) {
+        leftDrive.setPower(-0.35);
+        rightDrive.setPower(0.35);
+        }  else {
+            leftDrive.setPower(0);
+            rightDrive.setPower(0);
+        }
 
 
             // Send calculated power to wheels

@@ -69,9 +69,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Autonomous(name = "REDCLOSEtest", group = "Sensor")
+@Autonomous(name = "Blueclosetestingproccess", group = "Sensor")
 //@Disabled
-public class REDCLOSEtest extends LinearOpMode {
+public class Blueclosetestingproccess extends LinearOpMode {
     public static final double JEWEL_SPEED = 0.35;
     public static final int JEWEL_TIME = 500;
     public static final double CR_DOWN = -0.75;
@@ -161,7 +161,7 @@ public class REDCLOSEtest extends LinearOpMode {
         while (opModeIsActive()) {
 
 
-            int vuTries = 10;
+            int vuTries = 5;
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             while (vuMark == RelicRecoveryVuMark.UNKNOWN && vuTries > 0) {
                 vuMark = RelicRecoveryVuMark.from(relicTemplate);
@@ -174,39 +174,39 @@ public class REDCLOSEtest extends LinearOpMode {
                 servotest.setPosition(0.175);
                 setDriveSpeed(0, 0);
                 sleep(1000);
-                if (colorsensor.red() > colorsensor.blue()) {
+                if (colorsensor.red() < colorsensor.blue()) {
 
-                        servoturn.setPosition(.3);
-                        sleep(1000);
-                        servotest.setPosition(.3);
-                        sleep(1000);
-                        servoturn.setPosition(0.5);
-                        sleep(1000);
-                    } else {
-                        servoturn.setPosition(.7);
-                        sleep(1000);
-                        servotest.setPosition(.3);
-                        sleep(1000);
-                        servoturn.setPosition(0.5);
-                        sleep(1000);
-                    }
+                    servoturn.setPosition(.3);
+                    sleep(1000);
+                    servotest.setPosition(.3);
+                    sleep(1000);
+                    servoturn.setPosition(0.5);
+                    sleep(1000);
+                } else {
+                    servoturn.setPosition(.7);
+                    sleep(1000);
+                    servotest.setPosition(.3);
+                    sleep(1000);
+                    servoturn.setPosition(0.5);
+                    sleep(1000);
+                }
 
                 servotest.setPosition(1);
                 sleep(2000);
 
-                setDriveSpeed(0.35, 0.35);
+                setDriveSpeed(-0.35, -0.35);
                 sleep(1000);
 
 
-                backmotorleft.setPower(.5);
-                backmotorright.setPower(.5);
+                backmotorleft.setPower(-.5);
+                backmotorright.setPower(-.5);
                 sleep(600);
 
                 backmotorleft.setPower(0);
                 backmotorright.setPower(0);
                 sleep(500);
 
-                setDriveSpeed(-0.35, -0.35);
+                setDriveSpeed(0.35, 0.35);
                 sleep(1800);
 
                 setDriveSpeed(0, 0);
@@ -221,11 +221,8 @@ public class REDCLOSEtest extends LinearOpMode {
 
 
                 while (isGray()) {
-                    setDriveSpeed(speed, speed);
-                    speed += 0.015;
-                    if (speed > 1) {
-                        speed = 1;
-                    }
+                    setDriveSpeed(-0.2, -0.2);
+
                     sleep(100);
                     telemetry.addData("Color", "gray");
                     telemetry.update();
@@ -238,32 +235,28 @@ public class REDCLOSEtest extends LinearOpMode {
 
 
                 final double HEADING_EPSILON = 1.5;
-                final double TURN_SPEED = 0.25;
+                             final double TURN_SPEED = 0.25;
 
-if (vuMark == RelicRecoveryVuMark.RIGHT) {
-    while (Math.abs(getHeading() + 80) > HEADING_EPSILON) ///Right
-        {
-        setDriveSpeed(TURN_SPEED, -TURN_SPEED);
-        telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
-        telemetry.update();
-    }
-}
-                else if (vuMark == RelicRecoveryVuMark.LEFT) {
-    setDriveSpeed(0.4, 0.4);
-    sleep(475);
-    setDriveSpeed(0,0);
-    sleep(1000);
-    while (Math.abs(getHeading() + 65 ) > HEADING_EPSILON)
+                if (vuMark == RelicRecoveryVuMark.RIGHT) {
+                    setDriveSpeed(-0.4, -0.4);
+                    sleep(475);
+                    setDriveSpeed(0, 0);
+                    sleep(1000);
+                    while (Math.abs(getHeading() + 60) > HEADING_EPSILON) ///Right
                     {
                         setDriveSpeed(TURN_SPEED, -TURN_SPEED);
                         telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
                         telemetry.update();
                     }
-                }
+                } else if (vuMark == RelicRecoveryVuMark.LEFT) {
 
-              else  {
-                   while (Math.abs(getHeading() + 60 ) > HEADING_EPSILON)
-                    {
+                    while (Math.abs(getHeading() + 20) > HEADING_EPSILON) {
+                        setDriveSpeed(TURN_SPEED, -TURN_SPEED);
+                        telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
+                        telemetry.update();
+                    }
+                } else {
+                    while (Math.abs(getHeading() + 60) > HEADING_EPSILON) {
                         setDriveSpeed(TURN_SPEED, -TURN_SPEED);
                         telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
                         telemetry.update();
