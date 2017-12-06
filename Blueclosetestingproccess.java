@@ -158,7 +158,6 @@ public class Blueclosetestingproccess extends LinearOpMode {
         double speed = 0;
 
 
-        while (opModeIsActive()) {
 
 
             int vuTries = 5;
@@ -168,34 +167,38 @@ public class Blueclosetestingproccess extends LinearOpMode {
                 vuTries -= 1;
             }
 
-            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
 
-                sleep(1000);
+        if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+            vuMark = RelicRecoveryVuMark.CENTER;
+        }
+
+
                 servotest.setPosition(0.175);
                 setDriveSpeed(0, 0);
-                sleep(1000);
+                sleep(400);
                 if (colorsensor.red() < colorsensor.blue()) {
 
                     servoturn.setPosition(.3);
-                    sleep(1000);
+                    sleep(700);
                     servotest.setPosition(.3);
-                    sleep(1000);
+                    sleep(600);
                     servoturn.setPosition(0.5);
-                    sleep(1000);
+                    sleep(300);
                 } else {
                     servoturn.setPosition(.7);
-                    sleep(1000);
+                    sleep(700);
                     servotest.setPosition(.3);
-                    sleep(1000);
+                    sleep(600);
                     servoturn.setPosition(0.5);
-                    sleep(1000);
+                    sleep(300);
                 }
 
                 servotest.setPosition(1);
-                sleep(2000);
+                sleep(300);
 
                 setDriveSpeed(-0.35, -0.35);
-                sleep(1000);
+        sleep(1000);
+
 
 
                 backmotorleft.setPower(-.5);
@@ -283,8 +286,8 @@ public class Blueclosetestingproccess extends LinearOpMode {
 
 
             }
-        }
-    }
+
+
 
 
     boolean isGray() {
