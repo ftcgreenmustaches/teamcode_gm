@@ -158,19 +158,23 @@ public class REDFARtest extends LinearOpMode {
         double speed = 0;
 
 
-        while (opModeIsActive()) {
-            final double HEADING_EPSILON = 1.5;
+        int vuTries = 7;
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        while (vuMark == RelicRecoveryVuMark.UNKNOWN && vuTries > 0) {
+            vuMark = RelicRecoveryVuMark.from(relicTemplate);
+            vuTries -= 1;
+        }
+
+
+        if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+            vuMark = RelicRecoveryVuMark.CENTER;
+        }
+
+               final double HEADING_EPSILON = 1.5;
             final double TURN_SPEED = 0.25;
 
 
-            int vuTries = 10;
-            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            while (vuMark == RelicRecoveryVuMark.UNKNOWN && vuTries > 0) {
-                vuMark = RelicRecoveryVuMark.from(relicTemplate);
-                vuTries -= 1;
-            }
 
-            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
 
 
                 sleep(1000);
@@ -300,8 +304,7 @@ public class REDFARtest extends LinearOpMode {
 
 
             }
-        }
-    }
+
 
 
     boolean isGray() {

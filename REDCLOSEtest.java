@@ -157,18 +157,19 @@ public class REDCLOSEtest extends LinearOpMode {
 
         double speed = 0;
 
+        int vuTries = 7;
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        while (vuMark == RelicRecoveryVuMark.UNKNOWN && vuTries > 0) {
+            vuMark = RelicRecoveryVuMark.from(relicTemplate);
+            vuTries -= 1;
+        }
 
-        while (opModeIsActive()) {
+
+        if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+            vuMark = RelicRecoveryVuMark.CENTER;
+        }
 
 
-            int vuTries = 10;
-            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            while (vuMark == RelicRecoveryVuMark.UNKNOWN && vuTries > 0) {
-                vuMark = RelicRecoveryVuMark.from(relicTemplate);
-                vuTries -= 1;
-            }
-
-            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
 
                 sleep(1000);
                 servotest.setPosition(0.175);
@@ -290,8 +291,8 @@ if (vuMark == RelicRecoveryVuMark.RIGHT) {
 
 
             }
-        }
-    }
+
+
 
 
     boolean isGray() {

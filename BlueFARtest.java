@@ -69,9 +69,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Autonomous(name = "Blueclosetestingproccess", group = "Sensor")
+@Autonomous(name = "BlueFARtest", group = "Sensor")
 //@Disabled
-public class Blueclosetestingproccess extends LinearOpMode {
+public class BlueFARtest extends LinearOpMode {
     public static final double JEWEL_SPEED = 0.35;
     public static final int JEWEL_TIME = 500;
     public static final double CR_DOWN = -0.75;
@@ -158,14 +158,15 @@ public class Blueclosetestingproccess extends LinearOpMode {
         double speed = 0;
 
 
+             final double HEADING_EPSILON = 1.5;
+            final double TURN_SPEED = 0.25;
 
-
-            int vuTries = 5;
-            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            while (vuMark == RelicRecoveryVuMark.UNKNOWN && vuTries > 0) {
-                vuMark = RelicRecoveryVuMark.from(relicTemplate);
-                vuTries -= 1;
-            }
+        int vuTries = 7;
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        while (vuMark == RelicRecoveryVuMark.UNKNOWN && vuTries > 0) {
+            vuMark = RelicRecoveryVuMark.from(relicTemplate);
+            vuTries -= 1;
+        }
 
 
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
@@ -173,37 +174,36 @@ public class Blueclosetestingproccess extends LinearOpMode {
         }
 
 
+                sleep(1000);
                 servotest.setPosition(0.175);
                 setDriveSpeed(0, 0);
-                sleep(400);
-                if (colorsensor.red() < colorsensor.blue()) {
-
+                sleep(1000);
+                if (colorsensor.red() < colorsensor.blue())  {
                     servoturn.setPosition(.3);
-                    sleep(700);
+                    sleep(1000);
                     servotest.setPosition(.3);
-                    sleep(600);
+                    sleep(1000);
                     servoturn.setPosition(0.5);
-                    sleep(300);
+                    sleep(1000);
                 } else {
                     servoturn.setPosition(.7);
-                    sleep(700);
+                    sleep(1000);
                     servotest.setPosition(.3);
-                    sleep(600);
+                    sleep(1000);
                     servoturn.setPosition(0.5);
-                    sleep(300);
+                    sleep(1000);
                 }
 
                 servotest.setPosition(1);
-                sleep(300);
+                sleep(2000);
 
                 setDriveSpeed(-0.35, -0.35);
-        sleep(1000);
-
+                sleep(1000);
 
 
                 backmotorleft.setPower(-.5);
                 backmotorright.setPower(-.5);
-                sleep(600);
+                sleep(450);
 
                 backmotorleft.setPower(0);
                 backmotorright.setPower(0);
@@ -215,6 +215,16 @@ public class Blueclosetestingproccess extends LinearOpMode {
                 setDriveSpeed(0, 0);
                 sleep(600);
 
+                setDriveSpeed(-0.4, -0.4);
+                sleep(1200);
+
+                while (Math.abs(getHeading() - 90  ) > HEADING_EPSILON)
+                {
+                    setDriveSpeed(-TURN_SPEED, TURN_SPEED);
+
+                }
+                setDriveSpeed(-0.3, -0.3);
+                sleep(1000);
 
                 telemetry.addData("Color", "" + colorsensor2.red() + " / " + colorsensor2.green() + " / " + colorsensor2.blue());
                 telemetry.update();
@@ -224,8 +234,11 @@ public class Blueclosetestingproccess extends LinearOpMode {
 
 
                 while (isGray()) {
-                    setDriveSpeed(-0.2, -0.2);
-
+                    setDriveSpeed(speed, speed);
+                    speed += 0.015;
+                    if (speed > 1) {
+                        speed = 1;
+                    }
                     sleep(100);
                     telemetry.addData("Color", "gray");
                     telemetry.update();
@@ -237,30 +250,32 @@ public class Blueclosetestingproccess extends LinearOpMode {
                 setDriveSpeed(0, 0);
 
 
-                final double HEADING_EPSILON = 1.5;
-                             final double TURN_SPEED = 0.25;
 
-                if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                    setDriveSpeed(-0.4, -0.4);
-                    sleep(475);
-                    setDriveSpeed(0, 0);
-                    sleep(1000);
-                    while (Math.abs(getHeading() + 60) > HEADING_EPSILON) ///Right
+                if (vuMark == RelicRecoveryVuMark.LEFT) {
+                    while (Math.abs(getHeading()  - 130 ) > HEADING_EPSILON) ///Right
                     {
-                        setDriveSpeed(TURN_SPEED, -TURN_SPEED);
+                        setDriveSpeed(-TURN_SPEED, TURN_SPEED);
                         telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
                         telemetry.update();
                     }
-                } else if (vuMark == RelicRecoveryVuMark.LEFT) {
+                }
+                else if (vuMark == RelicRecoveryVuMark.RIGHT) {
+                    setDriveSpeed(0.4, 0.4);
+                    sleep(700);
+                    setDriveSpeed(0,0);
+                    sleep(1000);
+                    while (Math.abs(getHeading() -130  ) > HEADING_EPSILON)
+                    {
+                        setDriveSpeed(-TURN_SPEED, TURN_SPEED);
+                        telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
+                        telemetry.update();
+                    }
+                }
 
-                    while (Math.abs(getHeading() + 20) > HEADING_EPSILON) {
-                        setDriveSpeed(TURN_SPEED, -TURN_SPEED);
-                        telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
-                        telemetry.update();
-                    }
-                } else {
-                    while (Math.abs(getHeading() + 60) > HEADING_EPSILON) {
-                        setDriveSpeed(TURN_SPEED, -TURN_SPEED);
+                else  {
+                    while (Math.abs(getHeading()  -160  ) > HEADING_EPSILON)
+                    {
+                        setDriveSpeed(-TURN_SPEED, TURN_SPEED);
                         telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
                         telemetry.update();
                     }
@@ -268,7 +283,7 @@ public class Blueclosetestingproccess extends LinearOpMode {
 
                 setDriveSpeed(0, 0);
                 setDriveSpeed(0.2, 0.2);
-                sleep(1400);
+                sleep(400);
 
                 armDrive1.setPower(-0.8);
                 armDrive2.setPower(-0.8);
@@ -276,17 +291,16 @@ public class Blueclosetestingproccess extends LinearOpMode {
 
                 armDrive1.setPower(0);
                 armDrive2.setPower(0);
-                sleep(1000);
+                sleep(100);
 
                 setDriveSpeed(-0.3, -0.3);
-                sleep(200);
+                sleep(450);
 
                 setDriveSpeed(0, 0);
-                sleep(1000);
+                sleep(100);
 
 
             }
-
 
 
 
