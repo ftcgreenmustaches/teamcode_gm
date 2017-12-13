@@ -179,11 +179,6 @@ public class Teleop2drivers extends LinearOpMode {
             }
 
 
-           // if (tsensor.isPressed(){
-                //armDrive3.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-               // armDrive4.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-             //gamepad2.y=;
-            //}
 
             if (gamepad1.x){
                 servoTest.setPosition(1);

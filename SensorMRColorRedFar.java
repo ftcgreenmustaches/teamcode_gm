@@ -35,6 +35,7 @@ import android.view.View;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -70,7 +71,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 @Autonomous(name = "NEWredCLOSE", group = "Sensor")
-//@Disabled
+@Disabled
 public class SensorMRColorRedFar extends LinearOpMode {
     public static final double JEWEL_SPEED = 0.35;
     public static final int JEWEL_TIME = 500;
@@ -102,8 +103,8 @@ public class SensorMRColorRedFar extends LinearOpMode {
 
         leftDrive = hardwareMap.get(DcMotor.class, "motorleft");
         rightDrive = hardwareMap.get(DcMotor.class, "motorright");
-        backmotorleft = hardwareMap.get(DcMotor.class, "backmotorleft");
-        backmotorright = hardwareMap.get(DcMotor.class, "backmotorright");
+        backmotorleft = hardwareMap.get(DcMotor.class, "leftDrive");
+        backmotorright = hardwareMap.get(DcMotor.class, "rightDrive");
         servotest = hardwareMap.get(Servo.class, "servotest");
         servoturn = hardwareMap.get(Servo.class, "servoturn");
         armDrive1 = hardwareMap.get(DcMotor.class, "armmotor1");

@@ -102,8 +102,8 @@ public class REDFARtest extends LinearOpMode {
 
         leftDrive = hardwareMap.get(DcMotor.class, "motorleft");
         rightDrive = hardwareMap.get(DcMotor.class, "motorright");
-        backmotorleft = hardwareMap.get(DcMotor.class, "backmotorleft");
-        backmotorright = hardwareMap.get(DcMotor.class, "backmotorright");
+        backmotorleft = hardwareMap.get(DcMotor.class, "leftDrive");
+        backmotorright = hardwareMap.get(DcMotor.class, "rightDrive");
         servotest = hardwareMap.get(Servo.class, "servotest");
         servoturn = hardwareMap.get(Servo.class, "servoturn");
         armDrive1 = hardwareMap.get(DcMotor.class, "armmotor1");
@@ -181,7 +181,7 @@ public class REDFARtest extends LinearOpMode {
                 servotest.setPosition(0.175);
                 setDriveSpeed(0, 0);
                 sleep(1000);
-                if (colorsensor.red() < colorsensor.blue())  {
+                if (colorsensor.red() > colorsensor.blue())  {
                     servoturn.setPosition(.3);
                     sleep(1000);
                     servotest.setPosition(.3);
@@ -255,7 +255,7 @@ public class REDFARtest extends LinearOpMode {
 
 
                 if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                    while (Math.abs(getHeading() -20  ) > HEADING_EPSILON) ///Right
+                    while (Math.abs(getHeading() -27  ) > HEADING_EPSILON) ///Right
                     {
                         setDriveSpeed(TURN_SPEED, -TURN_SPEED);
                         telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
@@ -276,7 +276,7 @@ public class REDFARtest extends LinearOpMode {
                 }
 
                 else  {
-                    while (Math.abs(getHeading()  - 42.5   ) > HEADING_EPSILON)
+                    while (Math.abs(getHeading()  - 47.5   ) > HEADING_EPSILON)
                     {
                         setDriveSpeed(TURN_SPEED, -TURN_SPEED);
                         telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);

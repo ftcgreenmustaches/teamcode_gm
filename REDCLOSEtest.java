@@ -209,6 +209,7 @@ public class REDCLOSEtest extends LinearOpMode {
 
                 setDriveSpeed(-0.35, -0.35);
                 sleep(1800);
+        backmotorright.setPower(0);
 
                 setDriveSpeed(0, 0);
                 sleep(600);
@@ -242,7 +243,7 @@ public class REDCLOSEtest extends LinearOpMode {
                 final double TURN_SPEED = 0.25;
 
 if (vuMark == RelicRecoveryVuMark.RIGHT) {
-    while (Math.abs(getHeading() + 80) > HEADING_EPSILON) ///Right
+    while (Math.abs(getHeading() + 85) > HEADING_EPSILON) ///Right
         {
         setDriveSpeed(TURN_SPEED, -TURN_SPEED);
         telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
@@ -250,16 +251,17 @@ if (vuMark == RelicRecoveryVuMark.RIGHT) {
     }
 }
                 else if (vuMark == RelicRecoveryVuMark.LEFT) {
-    setDriveSpeed(0.4, 0.4);
-    sleep(475);
-    setDriveSpeed(0,0);
-    sleep(1000);
-    while (Math.abs(getHeading() + 65 ) > HEADING_EPSILON)
+  setDriveSpeed(0.4,0.4);
+  sleep(1000);
+
+    while (Math.abs(getHeading() + 35 ) > HEADING_EPSILON)
                     {
                         setDriveSpeed(TURN_SPEED, -TURN_SPEED);
                         telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
                         telemetry.update();
                     }
+
+
                 }
 
               else  {
@@ -284,7 +286,7 @@ if (vuMark == RelicRecoveryVuMark.RIGHT) {
                 sleep(1000);
 
                 setDriveSpeed(-0.3, -0.3);
-                sleep(200);
+                sleep(320);
 
                 setDriveSpeed(0, 0);
                 sleep(1000);

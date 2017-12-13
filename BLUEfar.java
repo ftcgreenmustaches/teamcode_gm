@@ -45,8 +45,8 @@ public class BLUEfar extends LinearOpMode {
         armDrive2 = hardwareMap.get(DcMotor.class, "armmotor2");
         servotest = hardwareMap.get(Servo.class, "servotest");
         colorSensor = hardwareMap.get(ColorSensor.class, "colorsensor");
-        backmotorleft = hardwareMap.get(DcMotor.class, "backmotorleft");
-        backmotorright = hardwareMap.get(DcMotor.class, "backmotorright");
+        backmotorleft = hardwareMap.get(DcMotor.class, "leftDrive");
+        backmotorright = hardwareMap.get(DcMotor.class, "rightDrive");
 
 
 

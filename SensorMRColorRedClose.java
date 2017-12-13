@@ -57,7 +57,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 @Autonomous(name = "Sensor: MR Color Red Close", group = "Sensor")
-//@Disabled
+@Disabled
 public class SensorMRColorRedClose extends LinearOpMode {
     public static final double JEWEL_SPEED = 0.35;
     public static final int JEWEL_TIME = 500;
@@ -83,8 +83,8 @@ public class SensorMRColorRedClose extends LinearOpMode {
         colorSensor2 = hardwareMap.get(ColorSensor.class, "colorsensor2");
         leftDrive = hardwareMap.get(DcMotor.class, "motorleft");
         rightDrive = hardwareMap.get(DcMotor.class, "motorright");
-        backmotorleft = hardwareMap.get(DcMotor.class, "backmotorleft");
-        backmotorright = hardwareMap.get(DcMotor.class, "backmotorright");
+        backmotorleft = hardwareMap.get(DcMotor.class, "leftDrive");
+        backmotorright = hardwareMap.get(DcMotor.class, "rightDrive");
         servotest = hardwareMap.get(Servo.class, "servotest");
                                                                                                                armDrive1 = hardwareMap.get(DcMotor.class, "armmotor1");
         armDrive2 = hardwareMap.get(DcMotor.class, "armmotor2");
