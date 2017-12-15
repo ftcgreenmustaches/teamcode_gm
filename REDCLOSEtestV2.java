@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -60,8 +61,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 @Autonomous(name = "REDCLOSEtestV2", group = "Sensor")
-//@Disabled
-public class REDCLOSEtestV2 extends LinearOpMode {
+@Disabled
+class REDCLOSEtestV2 extends LinearOpMode {
     public static final double JEWEL_SPEED = 0.35;
     public static final int JEWEL_TIME = 500;
     public static final double CR_DOWN = -0.75;
@@ -161,8 +162,7 @@ public class REDCLOSEtestV2 extends LinearOpMode {
             //   if (vuMark == RelicRecoveryVuMark.UNKNOWN)
             // { vuMark = RelicRecoveryVuMark.CENTER; }
 
-            //   sleep(1000);
-           servotest.setPosition(0.175);
+            //   sleep(1000);    servotest.setPosition(0.175);
             setDriveSpeed(0, 0);
             sleep(1000);
             if (colorsensor.red() > colorsensor.blue()) {
@@ -184,6 +184,7 @@ public class REDCLOSEtestV2 extends LinearOpMode {
 
             servotest.setPosition(1);
             sleep(2000);
+
 
             setDriveSpeed(0.35, 0.35);
             sleep(1000);
@@ -268,7 +269,9 @@ else{
 
             setDriveSpeed(0, 0);
             sleep(1000);
-firsttime = 0;
+
+
+            firsttime = 0;
         }
         }
 

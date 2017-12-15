@@ -35,6 +35,7 @@ import android.view.View;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -70,7 +71,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 @Autonomous(name = "REDCLOSEtest", group = "Sensor")
-//@Disabled
+@Disabled
 public class REDCLOSEtest extends LinearOpMode {
     public static final double JEWEL_SPEED = 0.35;
     public static final int JEWEL_TIME = 500;
@@ -223,15 +224,15 @@ public class REDCLOSEtest extends LinearOpMode {
 
 
                 while (isGray()) {
-                    setDriveSpeed(speed, speed);
-                    speed += 0.015;
-                    if (speed > 1) {
-                        speed = 1;
-                    }
-                    sleep(100);
-                    telemetry.addData("Color", "gray");
-                    telemetry.update();
-                }
+            setDriveSpeed(speed, speed);
+            speed += 0.015;
+            if (speed > 1) {
+                speed = 1;
+            }
+            sleep(100);
+            telemetry.addData("Color", "gray");
+            telemetry.update();
+        }
 
                 telemetry.addData("Color", "not gray");
                 telemetry.update();

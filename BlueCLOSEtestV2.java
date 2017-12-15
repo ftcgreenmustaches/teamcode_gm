@@ -29,9 +29,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import android.app.Activity;
-import android.view.View;
-
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -41,19 +38,12 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 
@@ -70,9 +60,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Autonomous(name = "NEWredCLOSE", group = "Sensor")
+@Autonomous(name = "BlueCLOSEtestV2", group = "Sensor")
 @Disabled
-public class SensorMRColorRedFar extends LinearOpMode {
+public class BlueCLOSEtestV2 extends LinearOpMode {
     public static final double JEWEL_SPEED = 0.35;
     public static final int JEWEL_TIME = 500;
     public static final double CR_DOWN = -0.75;
@@ -103,8 +93,8 @@ public class SensorMRColorRedFar extends LinearOpMode {
 
         leftDrive = hardwareMap.get(DcMotor.class, "motorleft");
         rightDrive = hardwareMap.get(DcMotor.class, "motorright");
-        backmotorleft = hardwareMap.get(DcMotor.class, "leftDrive");
-        backmotorright = hardwareMap.get(DcMotor.class, "rightDrive");
+        backmotorleft = hardwareMap.get(DcMotor.class, "backmotorleft");
+        backmotorright = hardwareMap.get(DcMotor.class, "backmotorright");
         servotest = hardwareMap.get(Servo.class, "servotest");
         servoturn = hardwareMap.get(Servo.class, "servoturn");
         armDrive1 = hardwareMap.get(DcMotor.class, "armmotor1");
@@ -132,20 +122,19 @@ public class SensorMRColorRedFar extends LinearOpMode {
 
 
         //
-//colorSensor2 = hardwareMap.colorSensor.get("color");
-       // BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-      //  parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-      //  parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-      //  parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-       // parameters.loggingEnabled = true;
-       // parameters.loggingTag = "IMU";
-        // parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        BNO055IMU.Parameters parameters1 = new BNO055IMU.Parameters();
+        parameters1.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters1.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters1.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters1.loggingEnabled = true;
+        parameters1.loggingTag = "IMU";
+        parameters1.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu".
-    //    imu = hardwareMap.get(BNO055IMU.class, "imu");
-     //   imu.initialize(parameters);
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters1);
 
 // wait for the start button to be pressed.
         waitForStart();
@@ -160,176 +149,178 @@ public class SensorMRColorRedFar extends LinearOpMode {
         double speed = 0;
 
 
-        while (opModeIsActive()) {
-
+        while (opModeIsActive()   ) {
+            sleep(5000);
             int vuTries = 10;
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+
             while (vuMark == RelicRecoveryVuMark.UNKNOWN && vuTries > 0) {
                 vuMark = RelicRecoveryVuMark.from(relicTemplate);
                 vuTries -= 1;
             }
 
-            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-                vuMark = RelicRecoveryVuMark.CENTER;
-            }
-            sleep(2000);
-            servotest.setPosition(0);
-            setDriveSpeed(0, 0);
-            sleep(400);
-            if (colorsensor.red() > colorsensor.blue()) {
-                servoturn.setPosition(.3);
-                sleep(1000);
-                servoturn.setPosition(.5);
-                sleep(1000);
-            } else {
-                servoturn.setPosition(.7);
-                sleep(1000);
-                servoturn.setPosition(.5);
-                sleep(1000);
-
-            }
-
-            servotest.setPosition(0.5);
-            sleep(2000);
-
-            setDriveSpeed(0.35, 0.35);
-            sleep(1000);
 
 
-            backmotorleft.setPower(.5);
-            backmotorright.setPower(.5);
-            sleep(600);
-
-            backmotorleft.setPower(0);
-            backmotorright.setPower(0);
-            sleep(500);
-
-            setDriveSpeed(-0.35, -0.35);
-            sleep(1800);
-
-            setDriveSpeed(0, 0);
-            sleep(600);
+ //       if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+   //         vuMark = RelicRecoveryVuMark.CENTER;
+    //    }
 
 
-            telemetry.addData("Color", "" + colorsensor2.red() + " / " + colorsensor2.green() + " / " + colorsensor2.blue());
-            telemetry.update();
-            colorsensor2.red();
-            colorsensor2.blue();
-            colorsensor2.green();
+                servotest.setPosition(0.175);
+                setDriveSpeed(0, 0);
+                sleep(400);
 
+                setDriveSpeed(0,0);
+                sleep(500);
 
-            while (isGray()) {
-                setDriveSpeed(speed, speed);
-                speed += 0.015;
-                if (speed > 1) {
-                    speed = 1;
-                }
-                sleep(100);
-                telemetry.addData("Color", "gray");
-                telemetry.update();
-            }
+                if (colorsensor.red() < colorsensor.blue()) {
 
-            telemetry.addData("Color", "not gray");
-            telemetry.update();
-
-            setDriveSpeed(0, 0);
-
-
-            final double HEADING_EPSILON = 1.5;
-            final double TURN_SPEED = 0.25;
-
-            if (vuMark == RelicRecoveryVuMark.LEFT) {
-                while (Math.abs(getHeading() + 80) > HEADING_EPSILON) {
-                    setDriveSpeed(TURN_SPEED, -TURN_SPEED);
-                }
-                } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                    while (Math.abs(getHeading() + 50) > HEADING_EPSILON) {
-                        setDriveSpeed(.25, .25);
-                        sleep(200);
-                        setDriveSpeed(TURN_SPEED, -TURN_SPEED);
-
-                    }
+                    servoturn.setPosition(.3);
+                    sleep(700);
+                    servotest.setPosition(.3);
+                    sleep(600);
+                    servoturn.setPosition(0.5);
+                    sleep(300);
                 } else {
-                    while (Math.abs(getHeading() + 50) > HEADING_EPSILON) {
-                        setDriveSpeed(TURN_SPEED, -TURN_SPEED);
-
-                    }
+                    servoturn.setPosition(.7);
+                    sleep(700);
+                    servotest.setPosition(.3);
+                    sleep(600);
+                    servoturn.setPosition(0.5);
+                    sleep(300);
                 }
 
-//            while (Math.abs(getHeading() + 50) > HEADING_EPSILON)
-                //MIDDLE       while (Math.abs(getHeading() + 100 ) > HEADING_EPSILON) *THIS VALUE IS NOT EXACT
-                //LEFT           while (Math.abs(getHeading() + 120 ) > HEADING_EPSILON) *THIS VALUE IS NOT EXACT
+                servotest.setPosition(1);
+                sleep(300);
+
+                setDriveSpeed(-0.35, -0.35);
+        sleep(1000);
 
 
-                //         {
-//                setDriveSpeed(TURN_SPEED, -TURN_SPEED);
-                telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
+
+                backmotorleft.setPower(-.5);
+                backmotorright.setPower(-.5);
+                sleep(600);
+
+                backmotorleft.setPower(0);
+                backmotorright.setPower(0);
+                sleep(500);
+                 setDriveSpeed(0.35, 0.35);
+                sleep(1800);
+        backmotorright.setPower(0);
+
+        setDriveSpeed(0, 0);
+                sleep(600);
+
+
+                telemetry.addData("Color", "" + colorsensor2.red() + " / " + colorsensor2.green() + " / " + colorsensor2.blue());
                 telemetry.update();
+                colorsensor2.red();
+                colorsensor2.blue();
+                colorsensor2.green();
 
-                setDriveSpeed(0, 0);
-                setDriveSpeed(0.2, 0.2);
-                sleep(1400);
+        final double HEADING_EPSILON = 1.5;
+        final double TURN_SPEED = 0.25;
+        if (vuMark == RelicRecoveryVuMark.CENTER) {
+            setDriveSpeed(-0.3,-0.3);
+            sleep(1900);
+            telemetry.addData("CENTER", RelicRecoveryVuMark.CENTER);
+            telemetry.update();
+            while (Math.abs(getHeading() +90) > HEADING_EPSILON){
+                setDriveSpeed(TURN_SPEED,-TURN_SPEED);
+            }
+        } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
+            setDriveSpeed(-0.3,-0.3);
+            sleep(2650);
+            telemetry.addData("RIGHT", RelicRecoveryVuMark.RIGHT);
+            telemetry.update();
+            while (Math.abs(getHeading() + 90) > HEADING_EPSILON){
+                setDriveSpeed(TURN_SPEED, -TURN_SPEED);}
+        } else if (vuMark == RelicRecoveryVuMark.LEFT){
+             setDriveSpeed(-0.3,-0.3);
+            sleep(1100);
+          telemetry.addData("LEFT", RelicRecoveryVuMark.LEFT);
+            telemetry.update();
+            while (Math.abs(getHeading() +90) > HEADING_EPSILON){
+                setDriveSpeed(TURN_SPEED, -TURN_SPEED);}
+        }
 
-                armDrive1.setPower(-0.8);
-                armDrive2.setPower(-0.8);
-                sleep(1000);
-
-                armDrive1.setPower(0);
-                armDrive2.setPower(0);
-                sleep(1000);
-
-                setDriveSpeed(-0.3, -0.3);
-                sleep(200);
-
-                setDriveSpeed(0, 0);
-                sleep(1000);
-
-                while (true) {
-                    telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
-                    telemetry.update();
-                }
-
-
-                //     }
+        else{
+            telemetry.addData("Unknown", 0);
+            telemetry.update();
+            setDriveSpeed(-0.3,-0.3);
+            sleep(1900);
+            while (Math.abs(getHeading() + 90) > HEADING_EPSILON) {
+                setDriveSpeed(TURN_SPEED,-TURN_SPEED);
             }
         }
+        setDriveSpeed(0.3, 0.3);
+        sleep(800);
 
-    boolean isGray() {
-        final double COLOR_EPSILON = 60;
 
-        if (Math.abs(colorsensor2.red() - colorsensor2.blue()) > COLOR_EPSILON) {
-            return false;
-        }
+        armDrive2.setPower(-0.8);
+        sleep(500);
+        armDrive1.setPower(-0.8);
+        armDrive2.setPower(-0.8);
+        sleep(1000);
+        armDrive1.setPower(0);
+        armDrive2.setPower(0);
+        sleep(100);
+        setDriveSpeed(-0.3, -0.3);
+        sleep(400);
+        armDrive1.setPower(-0.8);
+        armDrive2.setPower(-0.8);
+        sleep(500);
+        armDrive1.setPower(0);
+        armDrive2.setPower(0);
 
-        if (Math.abs(colorsensor2.red() - colorsensor2.green()) > COLOR_EPSILON) {
-            return false;
-        }
-
-        if (Math.abs(colorsensor2.blue() - colorsensor2.green()) > COLOR_EPSILON) {
-            return false;
-        }
-
-        // must be gray
-        return true;
+        setDriveSpeed(0, 0);
+        sleep(1000);
+        firsttime = 0;
     }
+}
 
-    double getHeading() {
-        return imu.getAngularOrientation().firstAngle;
-    }
 
-    void setDriveSpeed(double left, double right) {
-        leftDrive.setPower(left);
+
+
+
+
+boolean isGray() {
+final double COLOR_EPSILON = 60;
+
+if (Math.abs(colorsensor2.red() - colorsensor2.blue()) > COLOR_EPSILON) {
+    return false;
+}
+
+if (Math.abs(colorsensor2.red() - colorsensor2.green()) > COLOR_EPSILON) {
+    return false;
+}
+
+if (Math.abs(colorsensor2.blue() - colorsensor2.green()) > COLOR_EPSILON) {
+    return false;
+}
+
+// must be gray
+return true;
+}
+
+double getHeading() {
+return imu.getAngularOrientation().firstAngle;
+}
+
+void setDriveSpeed(double left, double right) {
+leftDrive.setPower(left);
 //        leftDrive2.setPower(left * 0.9);
-        rightDrive.setPower(-right);
+rightDrive.setPower(-right);
 //        rightDrive2.setPower(right * 0.9);
-    }
+}
 
-    void setBackSpeed(double left, double right) {
-        backmotorleft.setPower(-left);
+void setBackSpeed(double left, double right) {
+backmotorleft.setPower(-left);
 //        leftDrive2.setPower(left * 0.9);
-        backmotorright.setPower(right);
+backmotorright.setPower(right);
 //        rightDrive2.setPower(right * 0.9);
-    }
+}
 }
 //});
 

@@ -29,9 +29,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import android.app.Activity;
-import android.view.View;
-
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -40,19 +37,12 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 
@@ -69,10 +59,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Autonomous(name = "BlueFARtest", group = "Sensor")
+@Autonomous(name = "REDCLOSEtestBEASTMODE", group = "LinearOpMode")
 //@Disabled
-public class BlueFARtest extends LinearOpMode {
-
+public class REDCLOSEBEASTMODE extends LinearOpMode {
     public static final double JEWEL_SPEED = 0.35;
     public static final int JEWEL_TIME = 500;
     public static final double CR_DOWN = -0.75;
@@ -89,6 +78,8 @@ public class BlueFARtest extends LinearOpMode {
     private BNO055IMU imu;
     private DcMotor armDrive1;
     private DcMotor armDrive2;
+    private DcMotor armDrive3;
+    private DcMotor armDrive4;
     private VuforiaTrackable relicTemplate = null;
 
     //private TouchSensor digitaltouch=null;
@@ -110,6 +101,9 @@ public class BlueFARtest extends LinearOpMode {
         servoturn = hardwareMap.get(Servo.class, "servoturn");
         armDrive1 = hardwareMap.get(DcMotor.class, "armmotor1");
         armDrive2 = hardwareMap.get(DcMotor.class, "armmotor2");
+        armDrive3 = hardwareMap.get(DcMotor.class, "armmotor3");
+        armDrive4 = hardwareMap.get(DcMotor.class, "armmotor4");
+
         //digitaltouch=hardwareMap.get(TouchSensor.class, "digitaltouch")
 
         armDrive2.setDirection(DcMotor.Direction.FORWARD);
@@ -160,14 +154,10 @@ public class BlueFARtest extends LinearOpMode {
 
         double speed = 0;
         while (opModeIsActive() && firsttime ==1 ) {
-            sleep(2000);
             int vuTries = 10;
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
 
-            while (vuMark == RelicRecoveryVuMark.UNKNOWN && vuTries > 0) {
-                vuMark = RelicRecoveryVuMark.from(relicTemplate);
-                vuTries -= 1;
-            }
+
 
             //   if (vuMark == RelicRecoveryVuMark.UNKNOWN)
             // { vuMark = RelicRecoveryVuMark.CENTER; }
@@ -175,26 +165,32 @@ public class BlueFARtest extends LinearOpMode {
             //   sleep(1000);
             servotest.setPosition(0.175);
             setDriveSpeed(0, 0);
-            sleep(1000);
+            sleep(700);
             if (colorsensor.red() > colorsensor.blue()) {
 
                 servoturn.setPosition(.3);
-                sleep(1000);
+                sleep(850);
                 servotest.setPosition(.3);
-                sleep(1000);
+                sleep(850);
                 servoturn.setPosition(0.5);
-                sleep(1000);
+                sleep(850);
             } else {
                 servoturn.setPosition(.7);
-                sleep(1000);
+                sleep(850);
                 servotest.setPosition(.3);
-                sleep(1000);
+                sleep(850);
                 servoturn.setPosition(0.5);
-                sleep(1000);
+                sleep(850);
+            }
+
+            while (vuMark == RelicRecoveryVuMark.UNKNOWN && vuTries > 0) {
+                vuMark = RelicRecoveryVuMark.from(relicTemplate);
+                vuTries -= 1;
             }
 
             servotest.setPosition(1);
-            sleep(2000);
+            sleep(1000);
+
 
             setDriveSpeed(0.35, 0.35);
             sleep(1000);
@@ -222,50 +218,56 @@ public class BlueFARtest extends LinearOpMode {
             colorsensor2.blue();
             colorsensor2.green();
 
-            final double HEADING_EPSILON = 1.5;
-            final double TURN_SPEED = 0.25;
+            final double HEADING_EPSILON = 2.5;// Original=1.5
+            final double TURN_SPEED =.5;
             if (vuMark == RelicRecoveryVuMark.CENTER) {
-                setDriveSpeed(0.3,0.3);
-                sleep(1900);
+              setDriveSpeed(0.3,0.3);
+              sleep(1900);
+              setDriveSpeed(0,0);
+              sleep(100);
+
                 telemetry.addData("CENTER", RelicRecoveryVuMark.CENTER);
                 telemetry.update();
-                while (Math.abs(getHeading() + 90) > HEADING_EPSILON){
-                    setDriveSpeed(TURN_SPEED, -TURN_SPEED);
+                while (Math.abs(getHeading() + 80) > HEADING_EPSILON){
+                    setDriveSpeed(0.35, -0.35);
                 }
             } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
                 setDriveSpeed(0.3,0.3);
                 sleep(1100);
                 telemetry.addData("RIGHT", RelicRecoveryVuMark.RIGHT);
                 telemetry.update();
-                while (Math.abs(getHeading() + 90) > HEADING_EPSILON){
-                    setDriveSpeed(TURN_SPEED, -TURN_SPEED);}
+                while (Math.abs(getHeading() + 80) > HEADING_EPSILON){
+                    setDriveSpeed(0.35, -0.35);}
             } else if (vuMark == RelicRecoveryVuMark.LEFT){
                 setDriveSpeed(0.3,0.3);
                 sleep(2650);
                 telemetry.addData("LEFT", RelicRecoveryVuMark.LEFT);
                 telemetry.update();
-                while (Math.abs(getHeading() + 90) > HEADING_EPSILON){
-                    setDriveSpeed(TURN_SPEED, -TURN_SPEED);}
+                while (Math.abs(getHeading() + 80) > HEADING_EPSILON){
+                    setDriveSpeed(0.35, -0.35);}
             }
 
-            else{
+else{
                 telemetry.addData("Unknown", 0);
                 telemetry.update();
                 setDriveSpeed(0.3, 0.3);
                 sleep(1900);
-                while (Math.abs(getHeading() + 90) > HEADING_EPSILON) {
-                    setDriveSpeed(TURN_SPEED, -TURN_SPEED);
+                while (Math.abs(getHeading() + 80) > HEADING_EPSILON) {
+                    setDriveSpeed(0.35, -0.35);
                 }
             }
+            setDriveSpeed(0, 0);
+            sleep(100);
+
             setDriveSpeed(0.3, 0.3);
-            sleep(800);
+            sleep(350);
 
 
             armDrive2.setPower(-0.8);
             sleep(500);
             armDrive1.setPower(-0.8);
             armDrive2.setPower(-0.8);
-            sleep(1000);
+            sleep(701);
             armDrive1.setPower(0);
             armDrive2.setPower(0);
             sleep(100);
@@ -279,9 +281,76 @@ public class BlueFARtest extends LinearOpMode {
 
             setDriveSpeed(0, 0);
             sleep(1000);
+
+            while (Math.abs(getHeading() -102.5) > HEADING_EPSILON) {
+                 setDriveSpeed(0.4, -0.4);}
+
+                setDriveSpeed(0.75,0.75);
+            armDrive1.setPower(0.8);
+            armDrive2.setPower(0.8);
+            sleep(1300);
+
+setDriveSpeed(0,0);
+armDrive1.setPower(0);
+armDrive2.setPower(0);
+sleep(700);
+
+            armDrive1.setPower(0.8);
+            armDrive2.setPower(0.8);
+            sleep(850);
+
+
+            armDrive1.setPower(0);
+armDrive2.setPower(0);
+sleep(300);
+
+
+            setDriveSpeed(-0.4,-0.4);
+            armDrive3.setPower(-0.5);
+            armDrive4.setPower(0.5);
+            sleep(300);
+
+            armDrive3.setPower(0);
+            armDrive4.setPower(0);
+
+            while (Math.abs(getHeading()+74) > HEADING_EPSILON){
+                setDriveSpeed(TURN_SPEED, -TURN_SPEED);}
+
+                setDriveSpeed(0.7,0.7);
+            armDrive3.setPower(-0.95);
+            armDrive4.setPower(0.95);
+            sleep(1450);
+
+            armDrive3.setPower(0);
+            armDrive4.setPower(0);
+
+            setDriveSpeed(0,0);
+
+            armDrive1.setPower(-0.8);
+            armDrive2.setPower(-0.8);
+            sleep(600);
+           armDrive1.setPower(0);
+           armDrive2.setPower(0);
+
+            armDrive1.setPower(-0.8);
+            armDrive2.setPower(-0.8);
+
+           setDriveSpeed(0.3,0.3);
+           sleep(300);
+
+           setDriveSpeed(0,0);
+
+           armDrive1.setPower(0);
+           armDrive2.setPower(0);
+
+           setDriveSpeed(-0.27,-0.27);
+            armDrive1.setPower(-1);
+            armDrive2.setPower(-1);
+           sleep(200);
+
             firsttime = 0;
         }
-    }
+        }
 
 
 
@@ -322,283 +391,6 @@ public class BlueFARtest extends LinearOpMode {
         backmotorright.setPower(right);
 //        rightDrive2.setPower(right * 0.9);
     }
-}
-//});
-
-//}
-//        }
-
-/********************Ajay
-
-public static final double JEWEL_SPEED = 0.35;
-public static final int JEWEL_TIME = 500;
-public static final double CR_DOWN = -0.75;
-ColorSensor colorsensor2;    // Hardware Device Object
-ColorSensor colorsensor;    // Hardware Device Object
-OpenGLMatrix lastLocation = null;
-VuforiaLocalizer vuforia;
-private DcMotor leftDrive = null;
-private DcMotor rightDrive = null;
-private DcMotor backmotorleft = null;
-private DcMotor backmotorright = null;
-private Servo servotest = null;
-private Servo servoturn = null;
-private BNO055IMU imu;
-private DcMotor armDrive1;
-private DcMotor armDrive2;
-
-//private TouchSensor digitaltouch=null;
-@Override
-public void runOpMode() {
-    // leftDrive.setDirection(DcMotor.Direction.FORWARD);
-    //rightDrive.setDirection(DcMotor.Direction.REVERSE);
-
-
-    // get a reference to our ColorSensor object.
-    colorsensor2 = hardwareMap.get(ColorSensor.class, "colorsensor2");
-    colorsensor = hardwareMap.get(ColorSensor.class, "colorsensor");
-
-    leftDrive = hardwareMap.get(DcMotor.class, "motorleft");
-    rightDrive = hardwareMap.get(DcMotor.class, "motorright");
-    backmotorleft = hardwareMap.get(DcMotor.class, "leftDrive");
-    backmotorright = hardwareMap.get(DcMotor.class, "rightDrive");
-    servotest = hardwareMap.get(Servo.class, "servotest");
-    servoturn = hardwareMap.get(Servo.class, "servoturn");
-    armDrive1 = hardwareMap.get(DcMotor.class, "armmotor1");
-    armDrive2 = hardwareMap.get(DcMotor.class, "armmotor2");
-    //digitaltouch=hardwareMap.get(TouchSensor.class, "digitaltouch")
-
-    armDrive2.setDirection(DcMotor.Direction.FORWARD);
-    armDrive1.setDirection(DcMotor.Direction.FORWARD);
-    backmotorleft.setDirection(DcMotorSimple.Direction.REVERSE);
-    backmotorright.setDirection(DcMotorSimple.Direction.FORWARD);
-    int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-    VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-    parameters.vuforiaLicenseKey = "Ad2LNdb/////AAAAGR0zE9J++E4mgHVzCDy04EE6RLn++aUJb//ZYP" +
-            "YlO/v9Zj6I8/oj2ye9joVQx5/vfBCfYy6VcF7zXivXb1xNf4P33bGQ2umP55eFRVMb/nVQsOyRUox9Pu2" +
-            "VzzG97fAHs3MxZqFwc+72o8wYZ4P2AGQxG0dPhpGWRW5RBsCDXUdvr5cNe/sGoou33gNNF8Dd3YZsrK8Wn" +
-            "oMFh3IAUxMkGZJ96pIhyO0JTMC2jQqVmWtngjxbofZJY05egmDZlGGQvw" +
-            "85kg0UNLY322eW6XFzfHDdqAzKeEJWoWVLNJgG48h2LsNHzNV3cnZLvCfR6WtOq1dvYB" +
-            "YPqEMKcHNKbLLVlKk2eSS4BK9hMBobeEplJVsE";
-
-    parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
-    this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-    VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-    VuforiaTrackable relicTemplate = relicTrackables.get(0);
-    relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
-
-
-    //
-    BNO055IMU.Parameters parameters1 = new BNO055IMU.Parameters();
-    parameters1.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-    parameters1.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-    parameters1.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-    parameters1.loggingEnabled = true;
-    parameters1.loggingTag = "IMU";
-    parameters1.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-
-    // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-    // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
-    // and named "imu".
-    imu = hardwareMap.get(BNO055IMU.class, "imu");
-    imu.initialize(parameters1);
-
-// wait for the start button to be pressed.
-    waitForStart();
-
-    relicTrackables.activate();
-
-    //leftDrive.setPower(0);
-    //  rightDrive.setPower(0);
-
-    int firsttime = 1;
-
-    double speed = 0;
-
-
-         final double HEADING_EPSILON = 1.5;
-        final double TURN_SPEED = 0.25;
-
-    int vuTries = 10;
-    RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-    while (vuMark == RelicRecoveryVuMark.UNKNOWN && vuTries > 0) {
-        vuMark = RelicRecoveryVuMark.from(relicTemplate);
-        vuTries -= 1;
-    }
-
-
-    if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-        vuMark = RelicRecoveryVuMark.CENTER;
-    }
-
-
-            sleep(1000);
-            servotest.setPosition(0.175);
-            setDriveSpeed(0, 0);
-            sleep(1000);
-            if (colorsensor.red() < colorsensor.blue())  {
-                servoturn.setPosition(.3);
-                sleep(1000);
-                servotest.setPosition(.3);
-                sleep(1000);
-                servoturn.setPosition(0.5);
-                sleep(1000);
-            } else {
-                servoturn.setPosition(.7);
-                sleep(1000);
-                servotest.setPosition(.3);
-                sleep(1000);
-                servoturn.setPosition(0.5);
-                sleep(1000);
-            }
-
-            servotest.setPosition(1);
-            sleep(2000);
-
-            setDriveSpeed(-0.35, -0.35);
-            sleep(1000);
-
-
-            backmotorleft.setPower(-.5);
-            backmotorright.setPower(-.5);
-            sleep(450);
-
-            backmotorleft.setPower(0);
-            backmotorright.setPower(0);
-            sleep(500);
-
-            setDriveSpeed(0.35, 0.35);
-            sleep(1800);
-
-            setDriveSpeed(0, 0);
-            sleep(600);
-
-            setDriveSpeed(-0.4, -0.4);
-            sleep(800);
-
-            while (Math.abs(getHeading() - 90  ) > HEADING_EPSILON)
-            {
-                setDriveSpeed(-TURN_SPEED, TURN_SPEED);
-
-            }
-            setDriveSpeed(-0.3, -0.3);
-            sleep(1000);
-
-            telemetry.addData("Color", "" + colorsensor2.red() + " / " + colorsensor2.green() + " / " + colorsensor2.blue());
-            telemetry.update();
-            colorsensor2.red();
-            colorsensor2.blue();
-            colorsensor2.green();
-
-
-            while (isGray()) {
-                setDriveSpeed(speed, speed);
-                speed += 0.015;
-                if (speed > 1) {
-                    speed = 1;
-                }
-                sleep(100);
-                telemetry.addData("Color", "gray");
-                telemetry.update();
-            }
-
-            telemetry.addData("Color", "not gray");
-            telemetry.update();
-
-            setDriveSpeed(0, 0);
-
-
-
-            if (vuMark == RelicRecoveryVuMark.LEFT) {
-                while (Math.abs(getHeading()  - 130 ) > HEADING_EPSILON) ///Right
-                {
-                   // setDriveSpeed(-TURN_SPEED, TURN_SPEED);
-                    setBackSpeed(-TURN_SPEED,0);
-                    telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
-                    telemetry.update();
-                }
-            }
-            else if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                setDriveSpeed(0.2, 0.2);
-                sleep(300);
-                setDriveSpeed(0,0);
-                sleep(1000);
-                while (Math.abs(getHeading() -130  ) > HEADING_EPSILON)
-                {
-                    setDriveSpeed(-TURN_SPEED, TURN_SPEED);
-                    telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
-                    telemetry.update();
-                }
-            }
-
-            else  {
-                while (Math.abs(getHeading()  -160  ) > HEADING_EPSILON)
-                {
-                    setDriveSpeed(-TURN_SPEED, TURN_SPEED);
-                    telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
-                    telemetry.update();
-                }
-            }
-
-            setDriveSpeed(0, 0);
-            setDriveSpeed(0.2, 0.2);
-            sleep(400);
-
-            armDrive1.setPower(-0.8);
-            armDrive2.setPower(-0.8);
-            sleep(1000);
-
-            armDrive1.setPower(0);
-            armDrive2.setPower(0);
-            sleep(100);
-
-            setDriveSpeed(-0.3, -0.3);
-            sleep(550);
-
-            setDriveSpeed(0, 0);
-            sleep(100);
-
-
-        }
-
-
-
-boolean isGray() {
-    final double COLOR_EPSILON = 60;
-
-    if (Math.abs(colorsensor2.red() - colorsensor2.blue()) > COLOR_EPSILON) {
-        return false;
-    }
-
-    if (Math.abs(colorsensor2.red() - colorsensor2.green()) > COLOR_EPSILON) {
-        return false;
-    }
-
-    if (Math.abs(colorsensor2.blue() - colorsensor2.green()) > COLOR_EPSILON) {
-        return false;
-    }
-
-    // must be gray
-    return true;
-}
-
-double getHeading() {
-    return imu.getAngularOrientation().firstAngle;
-}
-
-void setDriveSpeed(double left, double right) {
-    leftDrive.setPower(left);
-//        leftDrive2.setPower(left * 0.9);
-    rightDrive.setPower(-right);
-//        rightDrive2.setPower(right * 0.9);
-}
-
-void setBackSpeed(double left, double right) {
-    backmotorleft.setPower(-left);
-//        leftDrive2.setPower(left * 0.9);
-    backmotorright.setPower(right);
-//        rightDrive2.setPower(right * 0.9);
-}
 }
 //});
 

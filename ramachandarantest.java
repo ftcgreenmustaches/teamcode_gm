@@ -29,9 +29,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import android.app.Activity;
-import android.view.View;
-
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -41,7 +38,14 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
+
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+
 
 /*
  *
@@ -56,21 +60,28 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Autonomous(name = "Sensor: MR Color Red Close", group = "Sensor")
+@Autonomous(name = "TEDDDDDDDDD", group = "LinearOpMode")
 @Disabled
-public class SensorMRColorRedClose extends LinearOpMode {
+public class ramachandarantest extends LinearOpMode {
     public static final double JEWEL_SPEED = 0.35;
     public static final int JEWEL_TIME = 500;
     public static final double CR_DOWN = -0.75;
-    ColorSensor colorSensor2;    // Hardware Device Object
+    ColorSensor colorsensor2;    // Hardware Device Object
+    ColorSensor colorsensor;    // Hardware Device Object
+    OpenGLMatrix lastLocation = null;
+    VuforiaLocalizer vuforia;
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
-    private DcMotor backmotorleft=null;
-    private DcMotor backmotorright=null;
-    private Servo servotest=null;
+    private DcMotor backmotorleft = null;
+    private DcMotor backmotorright = null;
+    private Servo servotest = null;
+    private Servo servoturn = null;
     private BNO055IMU imu;
     private DcMotor armDrive1;
     private DcMotor armDrive2;
+    private DcMotor armDrive3;
+    private DcMotor armDrive4;
+    private VuforiaTrackable relicTemplate = null;
 
     //private TouchSensor digitaltouch=null;
     @Override
@@ -80,168 +91,88 @@ public class SensorMRColorRedClose extends LinearOpMode {
 
 
         // get a reference to our ColorSensor object.
-        colorSensor2 = hardwareMap.get(ColorSensor.class, "colorsensor2");
+        colorsensor2 = hardwareMap.get(ColorSensor.class, "colorsensor2");
+        colorsensor = hardwareMap.get(ColorSensor.class, "colorsensor");
+
         leftDrive = hardwareMap.get(DcMotor.class, "motorleft");
         rightDrive = hardwareMap.get(DcMotor.class, "motorright");
-        backmotorleft = hardwareMap.get(DcMotor.class, "leftDrive");
-        backmotorright = hardwareMap.get(DcMotor.class, "rightDrive");
+        backmotorleft = hardwareMap.get(DcMotor.class, "backmotorleft");
+        backmotorright = hardwareMap.get(DcMotor.class, "backmotorright");
         servotest = hardwareMap.get(Servo.class, "servotest");
-                                                                                                               armDrive1 = hardwareMap.get(DcMotor.class, "armmotor1");
+        servoturn = hardwareMap.get(Servo.class, "servoturn");
+        armDrive1 = hardwareMap.get(DcMotor.class, "armmotor1");
         armDrive2 = hardwareMap.get(DcMotor.class, "armmotor2");
+        armDrive3 = hardwareMap.get(DcMotor.class, "armmotor3");
+        armDrive4 = hardwareMap.get(DcMotor.class, "armmotor4");
+
         //digitaltouch=hardwareMap.get(TouchSensor.class, "digitaltouch")
 
         armDrive2.setDirection(DcMotor.Direction.FORWARD);
         armDrive1.setDirection(DcMotor.Direction.FORWARD);
         backmotorleft.setDirection(DcMotorSimple.Direction.REVERSE);
         backmotorright.setDirection(DcMotorSimple.Direction.FORWARD);
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        parameters.vuforiaLicenseKey = "AZFp8MH/////AAAAGYv27PxrpU4kmiie6aqumwcN1emumBfetPrzCm5/O7j84" +
+                "KMIBLToY69YTGzl6OQoST3BZN0c/SyA/tuug4FBbukF8tdC38mjyoUF1F4JwRtPtBpYAHGmlSe+cW" +
+                "rE85Fl05x/IwHam+BMZFaq1Ov4h8xVIE1+7J9VQA0609IArWC/q5E9bKbzLK0yV2dZij61Nj8SSfF2O" +
+                "dIwCStqzOiyZPUj5Ez9wFza5sJlEMhZbJUhyzXNtKZbolEe4Ilw5OAvlZjKoboDGBpp025ifax04ECVFD" +
+                "wXrgMGzGDaPQHmepIigPRrmLfSl9LB/vGekFAvOnCJ4uy0jeeaeQTSDjC/LaB0W2x/M606KJSXdseMicCS";
+
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+        VuforiaTrackable relicTemplate = relicTrackables.get(0);
+        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
+
 
         //
-//colorSensor2 = hardwareMap.colorSensor.get("color");
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled = true;
-        parameters.loggingTag = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        BNO055IMU.Parameters parameters1 = new BNO055IMU.Parameters();
+        parameters1.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters1.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters1.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters1.loggingEnabled = true;
+        parameters1.loggingTag = "IMU";
+        parameters1.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu".
         imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
+        imu.initialize(parameters1);
 
 // wait for the start button to be pressed.
         waitForStart();
 
+        relicTrackables.activate();
+//        relicTemplate = relicTrackables.get(0);
 
         //leftDrive.setPower(0);
         //  rightDrive.setPower(0);
 
-        int firsttime = 1;
+        while (opModeIsActive()  ) {
 
-        double speed = 0;
-        while (opModeIsActive()) {
-
-
-            setDriveSpeed(0.35, 0.35);
-            sleep(1000);
-
-
-            backmotorleft.setPower(.5);
-            backmotorright.setPower(.5);
-            sleep(700);
-
-            backmotorleft.setPower(0);
-            backmotorright.setPower(0);
-            sleep(700);
-
-            setDriveSpeed(-0.35, -0.35);
-            sleep(1700);
-
-            setDriveSpeed(0, 0);
-            sleep(600);
-
-
-
-            telemetry.addData("Color", "" + colorSensor2.red() + " / " + colorSensor2.green() + " / " + colorSensor2.blue());
-            telemetry.update();
-            colorSensor2.red();
-            colorSensor2.blue();
-            colorSensor2.green();
-
-            while (isGray()) {
-                setDriveSpeed(speed, speed);
-                speed += 0.02;
-                if (speed > 1) {
-                    speed = 1;
-                }
-                sleep(100);
-                telemetry.addData("Color", "gray");
-                telemetry.update();
-            }
-
-            telemetry.addData("Color", "not gray");
-            telemetry.update();
-
-            setDriveSpeed(0, 0);
-          //   setDriveSpeed(0.25, 0.25);
-            // sleep(750);
-            while (isGray()) {
-                setDriveSpeed(speed, speed);
-                speed += 0.015;
-                if (speed > 1) {
-                    speed = 1;
-                }
-                sleep(100);
-                telemetry.addData("Color", "gray");
-                telemetry.update();
-            }
-
-            telemetry.addData("Color", "not gray");
-            telemetry.update();
-
-            setDriveSpeed(0, 0);
-
-
-            final double HEADING_EPSILON = 1.5;
-            final double TURN_SPEED = 0.25;
-
-            while (Math.abs(getHeading() + 50 ) > HEADING_EPSILON)
-         //MIDDLE       while (Math.abs(getHeading() + 100 ) > HEADING_EPSILON) *THIS VALUE IS NOT EXACT
-         //LEFT           while (Math.abs(getHeading() + 120 ) > HEADING_EPSILON) *THIS VALUE IS NOT EXACT
-
-
-                {
-                setDriveSpeed(TURN_SPEED, -TURN_SPEED);
-                telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
-                telemetry.update();
-
-
-                while (Math.abs(getHeading() + 50) > HEADING_EPSILON) {
-                    setDriveSpeed(TURN_SPEED, -TURN_SPEED);
-                    telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
-                    telemetry.update();
-                }
-                setDriveSpeed(0, 0);
-                setDriveSpeed(0.2, 0.2);
-                sleep(1400);
-
-                armDrive1.setPower(-0.8);
-                armDrive2.setPower(-0.8);
-                sleep(1000);
-
-                armDrive1.setPower(0);
-                armDrive2.setPower(0);
-                sleep(1000);
-
-                setDriveSpeed(-0.3, -0.3);
-                sleep(200);
-
-                setDriveSpeed(0, 0);
-                sleep(1000);
-
-                while (true) {
-                    telemetry.addData("gyro", imu.getAngularOrientation().firstAngle);
-                    telemetry.update();
-                }
-
-
-            }
+            armDrive3.setPower(-0.5);
+            armDrive4.setPower(0.5);
+            sleep(250);
         }
-    }
+        }
+
+
+
+
     boolean isGray() {
         final double COLOR_EPSILON = 60;
 
-        if (Math.abs(colorSensor2.red() - colorSensor2.blue()) > COLOR_EPSILON) {
+        if (Math.abs(colorsensor2.red() - colorsensor2.blue()) > COLOR_EPSILON) {
             return false;
         }
 
-        if (Math.abs(colorSensor2.red() - colorSensor2.green()) > COLOR_EPSILON) {
+        if (Math.abs(colorsensor2.red() - colorsensor2.green()) > COLOR_EPSILON) {
             return false;
         }
 
-        if (Math.abs(colorSensor2.blue() - colorSensor2.green()) > COLOR_EPSILON) {
+        if (Math.abs(colorsensor2.blue() - colorsensor2.green()) > COLOR_EPSILON) {
             return false;
         }
 
@@ -259,12 +190,14 @@ public class SensorMRColorRedClose extends LinearOpMode {
         rightDrive.setPower(-right);
 //        rightDrive2.setPower(right * 0.9);
     }
-    void setBackSpeed (double left, double right) {
+
+    void setBackSpeed(double left, double right) {
         backmotorleft.setPower(-left);
 //        leftDrive2.setPower(left * 0.9);
         backmotorright.setPower(right);
 //        rightDrive2.setPower(right * 0.9);
-}}
+    }
+}
 //});
 
 //}

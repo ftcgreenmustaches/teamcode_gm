@@ -146,7 +146,11 @@ public class Teleop2drivers extends LinearOpMode {
             }else if (gamepad2.left_bumper){
                 armDrive1.setPower(-0.7);
                 armDrive2.setPower(-0.7);
-            }else{
+            }else if (gamepad2.b) {
+                armDrive1.setPower(-0.23);
+                armDrive2.setPower(-0.23);
+            }
+            else{
                 armDrive1.setPower(0);
                 armDrive2.setPower(0);
             }
@@ -159,6 +163,10 @@ public class Teleop2drivers extends LinearOpMode {
 
             {  armDrive3.setPower(-0.8);
                 armDrive4.setPower(0.8);
+            }else if (gamepad2.x) {
+                armDrive3.setPower(-0.7);
+                armDrive4.setPower(0.7);
+                sleep(1800);
             }else{
                 armDrive3.setPower(0);
                 armDrive4.setPower(0);
