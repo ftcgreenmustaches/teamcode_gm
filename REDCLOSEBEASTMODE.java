@@ -205,7 +205,7 @@ public class REDCLOSEBEASTMODE extends LinearOpMode {
             sleep(100);
 
             setDriveSpeed(-0.35, -0.35);
-            sleep(1600);
+            sleep(2000);
             backmotorright.setPower(0);
 
             setDriveSpeed(0, 0);
