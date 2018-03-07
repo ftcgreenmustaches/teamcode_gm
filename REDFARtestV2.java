@@ -73,8 +73,8 @@ public class REDFARtestV2 extends LinearOpMode {
         private DcMotor rightDrive = null;
         private DcMotor backmotorleft = null;
         private DcMotor backmotorright = null;
-        private Servo servotest = null;
-        private Servo servoturn = null;
+        private Servo jewelextend = null;
+        private Servo jewelknock = null;
         private BNO055IMU imu;
         private DcMotor armDrive1;
         private DcMotor armDrive2;
@@ -95,8 +95,8 @@ public class REDFARtestV2 extends LinearOpMode {
             rightDrive = hardwareMap.get(DcMotor.class, "motorright");
             backmotorleft = hardwareMap.get(DcMotor.class, "backmotorleft");
             backmotorright = hardwareMap.get(DcMotor.class, "backmotorright");
-            servotest = hardwareMap.get(Servo.class, "servotest");
-            servoturn = hardwareMap.get(Servo.class, "servoturn");
+            jewelextend = hardwareMap.get(Servo.class, "jewelextend");
+            jewelknock = hardwareMap.get(Servo.class, "jewelknock");
             armDrive1 = hardwareMap.get(DcMotor.class, "armmotor1");
             armDrive2 = hardwareMap.get(DcMotor.class, "armmotor2");
             //digitaltouch=hardwareMap.get(TouchSensor.class, "digitaltouch")
@@ -161,27 +161,30 @@ public class REDFARtestV2 extends LinearOpMode {
                 // { vuMark = RelicRecoveryVuMark.CENTER; }
 
                 //   sleep(1000);
-                servotest.setPosition(0.175);
-                setDriveSpeed(0, 0);
-                sleep(1000);
-                if (colorsensor.red() > colorsensor.blue()) {
+                jewelextend.setPosition(0.275);
+                sleep(2000);
 
-                    servoturn.setPosition(.3);
-                    sleep(1000);
-                    servotest.setPosition(.3);
-                    sleep(1000);
-                    servoturn.setPosition(0.5);
-                    sleep(1000);
+                if (colorsensor.red() < colorsensor.blue()) {
+
+                    jewelknock.setPosition(0.3);
+                    sleep(700);
+                    jewelextend.setPosition(0.5);
+                    sleep(500);
+                    jewelknock.setPosition(0.5);
+                    sleep(750);
+                    jewelextend.setPosition(.8);
+                    sleep(600);
                 } else {
-                    servoturn.setPosition(.7);
+                    jewelknock.setPosition(0.7);
                     sleep(1000);
-                    servotest.setPosition(.3);
+                    jewelextend.setPosition(0.6);
                     sleep(1000);
-                    servoturn.setPosition(0.5);
-                    sleep(1000);
+                    jewelknock.setPosition(0.5);
+                    sleep(600);
+                    jewelextend.setPosition(.8);
+                    sleep(400);
                 }
-
-                servotest.setPosition(1);
+                jewelextend.setPosition(1);
                 sleep(2000);
 
                 while (vuMark == RelicRecoveryVuMark.UNKNOWN && vuTries > 0) {
@@ -207,11 +210,11 @@ public class REDFARtestV2 extends LinearOpMode {
                 sleep(200);
 
                 setDriveSpeed(0.4, 0.4);
-                sleep(350);
+                sleep(500);
                 final double HEADING_EPSILON = 1.5;
-                final double TURN_SPEED = 0.25;
-                while (Math.abs(getHeading() - 90) > HEADING_EPSILON) {
-                    setDriveSpeed(-TURN_SPEED, TURN_SPEED);
+                final double TURN_SPEED = 0.4;
+                while (Math.abs(getHeading() - 85) > HEADING_EPSILON) {
+                    setDriveSpeed(-0.4, 0.4);
 
                 }
                 setDriveSpeed(-0.3, -0.3);
@@ -260,8 +263,8 @@ public class REDFARtestV2 extends LinearOpMode {
                     telemetry.addData("Unknown", 0);
                     telemetry.update();
                     setDriveSpeed(0.3, 0.3);
-                    sleep(1900);
-                    while (Math.abs(getHeading() + 0) > HEADING_EPSILON) {
+                    sleep(1790);
+                    while (Math.abs(getHeading() - 7) > HEADING_EPSILON) {
                         setDriveSpeed(TURN_SPEED, -TURN_SPEED);
                     }
                 }

@@ -34,10 +34,12 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import java.util.concurrent.TimeUnit;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -61,7 +63,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 @Autonomous(name = "TEDDDDDDDDD", group = "LinearOpMode")
-@Disabled
+//@Disabled
 public class ramachandarantest extends LinearOpMode {
     public static final double JEWEL_SPEED = 0.35;
     public static final int JEWEL_TIME = 500;
@@ -82,6 +84,12 @@ public class ramachandarantest extends LinearOpMode {
     private DcMotor armDrive3;
     private DcMotor armDrive4;
     private VuforiaTrackable relicTemplate = null;
+    private Servo relictwist;
+    private CRServo relicpick;
+    private CRServo relicvertical;
+
+   // private Servo relicextend;
+    CRServo relicextend;
 
     //private TouchSensor digitaltouch=null;
     @Override
@@ -100,13 +108,18 @@ public class ramachandarantest extends LinearOpMode {
         backmotorright = hardwareMap.get(DcMotor.class, "backmotorright");
         servotest = hardwareMap.get(Servo.class, "servotest");
         servoturn = hardwareMap.get(Servo.class, "servoturn");
+        relictwist = hardwareMap.get(Servo.class, "relictwist");
+        relicextend = hardwareMap.get(CRServo.class, "relicextend");
+        relicpick= hardwareMap.get(CRServo.class, "relicpick");
+        relicvertical=hardwareMap.get(CRServo.class,"relicvertical");
+
         armDrive1 = hardwareMap.get(DcMotor.class, "armmotor1");
         armDrive2 = hardwareMap.get(DcMotor.class, "armmotor2");
         armDrive3 = hardwareMap.get(DcMotor.class, "armmotor3");
         armDrive4 = hardwareMap.get(DcMotor.class, "armmotor4");
 
         //digitaltouch=hardwareMap.get(TouchSensor.class, "digitaltouch")
-
+        relictwist.setDirection(Servo.Direction.REVERSE);
         armDrive2.setDirection(DcMotor.Direction.FORWARD);
         armDrive1.setDirection(DcMotor.Direction.FORWARD);
         backmotorleft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -152,11 +165,51 @@ public class ramachandarantest extends LinearOpMode {
 
         while (opModeIsActive()  ) {
 
-            armDrive3.setPower(-0.5);
-            armDrive4.setPower(0.5);
+         //relictwist.setPosition(1.5);
+          sleep(250);
+
+            relictwist.setPosition(-0.3);
             sleep(250);
+
+         //   relictwist.setPosition(.5);
+
+
+            //relicextend.setPosition(.1);
+  //         sleep(2000);
+
+       //  relicextend.setPosition(.5);
+
+             relicextend.setPower(0.0);
+            sleep(1000);
+            relicextend.setPower(-2.5);
+            sleep(5450);
+
+            relicextend.setPower(0);
+            sleep(1000);
+
+            relicpick.setPower(1);
+            sleep(800);
+
+            sleep(1000);
+            relicextend.setPower(2.5);
+
+            sleep(2950);
+
+            relicvertical.setPower(-.7);
+            sleep(850);
+
+           relicextend.setPower(2.5);
+            sleep(2000);
+
+            relicextend.setPower(0);
+            sleep(1000);
+
+
+         relicvertical.setPower(-1);
+         sleep(2500);
+
         }
-        }
+    }
 
 
 

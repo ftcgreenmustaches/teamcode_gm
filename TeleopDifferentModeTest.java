@@ -31,17 +31,12 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import android.widget.Button;
-
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -55,8 +50,8 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 
-@TeleOp(name="TELEOPMAIN 2 Drivers", group="Linear Opmode")
-public class Teleop2drivers extends LinearOpMode {
+@TeleOp(name="TELEOP ModeTest", group="Linear Opmode")
+public class TeleopDifferentModeTest extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -71,10 +66,15 @@ public class Teleop2drivers extends LinearOpMode {
     private DcMotor backmotorright=null;
     private DigitalChannel tsensor;
     CRServo relictwist;
-    CRServo relicvertical;
+    Servo relicvertical;
     CRServo relicextend;
-    CRServo relicpick;
-   //Servo relicpick;
+    Servo relicpick;
+    boolean extending = false;
+    boolean twisting = false;
+    boolean rising = false;
+    boolean endgame = false;
+
+    //Servo relicpick;
     //private TouchSensor tsensor;
     @Override
     public void runOpMode() {
@@ -95,12 +95,13 @@ public class Teleop2drivers extends LinearOpMode {
         backmotorright=hardwareMap.get(DcMotor.class, "backmotorright");
         tsensor = hardwareMap.get(DigitalChannel.class, "digitaltouch");
         relictwist = hardwareMap.get(CRServo.class, "relictwist");
-        relicvertical=hardwareMap.get(CRServo.class,"relicvertical");
+        relicvertical=hardwareMap.get(Servo.class,"relicvertical");
         relicextend=hardwareMap.get(CRServo.class,"relicextend");
-        relicpick=hardwareMap.get(CRServo.class, "relicpick");
+        relicpick=hardwareMap.get(Servo.class, "relicpick");
      //   relicpick=hardwareMap.get(Servo.class,"relickpick");
 
         int counter = 0;
+        endgame = false;
 
         // Reverse the motor that runs backwards when connected directly to the battery
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -122,14 +123,14 @@ public class Teleop2drivers extends LinearOpMode {
         }
 
 
-
+        boolean extending = false;
+        boolean twisting = false;
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
             // Setup a variable for each drive wheel to save power level for telemetry
             double leftPower;
             double rightPower;
@@ -140,77 +141,138 @@ public class Teleop2drivers extends LinearOpMode {
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight.
             double drive = -gamepad1.left_stick_y;
-            double turn  =  gamepad1.right_stick_x;
+            double turn = gamepad1.right_stick_x;
 
-            leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-            rightPower   = Range.clip(drive - turn, -1.0, 1.0);
+            leftPower = Range.clip(drive + turn, -1.0, 1.0);
+            rightPower = Range.clip(drive - turn, -1.0, 1.0);
 
 
-             // Tank aMode uses one stick to control each wheel.
+            // Tank aMode uses one stick to control each wheel.
             //- This requires no math, but it is hard to drive forward slowly and keep straight.
             // leftPower  = -gamepad1.left_stick_y ;
             //rightPower = -gamepad1.right_stick_y ;
-
-            if (gamepad2.right_bumper){
-                armDrive1.setPower(0.7);
-                armDrive2.setPower(0.7);
-            }else if (gamepad2.left_bumper){
-                armDrive1.setPower(-0.7);
-                armDrive2.setPower(-0.7);
-            }else if (gamepad2.b) {
-                armDrive1.setPower(-0.23);
-                armDrive2.setPower(-0.23);
-            }
-            else{
-                armDrive1.setPower(0);
-                armDrive2.setPower(0);
-            }
-
-
-            if (gamepad2.a){
-                armDrive3.setPower(0.8);
-                armDrive4.setPower(-0.8);
-            }else if (gamepad2.y && tsensor.getState())
-
-            {  armDrive3.setPower(-0.8);
-                armDrive4.setPower(0.8);
-            }else if (gamepad2.x) {
-                armDrive3.setPower(-0.7);
-                armDrive4.setPower(0.7);
-                sleep(1800);
-            }else{
-                armDrive3.setPower(0);
-                armDrive4.setPower(0);
-
-            }
-
-            if (gamepad1.dpad_up){
+            if (gamepad1.dpad_up) {
                 backmotorleft.setPower(1);
                 backmotorright.setPower(1);
-            }
-            else if (gamepad1.dpad_down){
+            } else if (gamepad1.dpad_down) {
                 backmotorright.setPower(-1);
                 backmotorleft.setPower(-1);
-            }
-            else{
+            } else {
                 backmotorleft.setPower(0);
                 backmotorright.setPower(0);
             }
 
+            if (gamepad2.left_stick_button) {
+                endgame = true;
+            } else if (gamepad2.right_stick_button) {
+                endgame = false;
+            }
+
+            if (!endgame) {
+
+
+                if (gamepad2.right_bumper) {
+                    armDrive1.setPower(0.7);
+                    armDrive2.setPower(0.7);
+                } else if (gamepad2.left_bumper) {
+                    armDrive1.setPower(-0.7);
+                    armDrive2.setPower(-0.7);
+                } else if (gamepad2.b) {
+                    armDrive1.setPower(-0.23);
+                    armDrive2.setPower(-0.23);
+                } else {
+                    armDrive1.setPower(0);
+                    armDrive2.setPower(0);
+                }
+
+
+                if (gamepad2.a) {
+                    armDrive3.setPower(0.8);
+                    armDrive4.setPower(-0.8);
+                } else if (gamepad2.y && tsensor.getState())
+
+                {
+                    armDrive3.setPower(-0.8);
+                    armDrive4.setPower(0.8);
+                } else if (gamepad2.x) {
+                    armDrive3.setPower(-0.7);
+                    armDrive4.setPower(0.7);
+                    sleep(1800);
+                } else {
+                    armDrive3.setPower(0);
+                    armDrive4.setPower(0);
+
+                }
+
+
+
+
+            } else {   //must be endgame
+
+
+
+                if (-gamepad2.left_stick_y > 0.01) {
+                    relicextend.setPower(-gamepad2.left_stick_y * -0.99);
+                    extending = true;
+                } else if (gamepad2.left_stick_y>0.1) {
+                    relicextend.setPower(gamepad2.left_stick_y*0.79);
+                    extending = true;
+                } else if (extending) {
+                    extending = false;
+                    relicextend.getController().pwmDisable();
+                }
+
+
+
+          /*      if (gamepad2.left_stick_y > 0.01) {
+                    relicextend.setPower(gamepad2.left_stick_y * .79);
+                    extending = true;
+                } else if (-gamepad2.left_stick_y > 0.01) {
+                    relicextend.setPower(-gamepad2.left_stick_y * -.79);
+                    extending = true;
+                } else if (extending) {
+                    extending = false;
+                    relictwist.getController().pwmDisable();
+                }
+*/
+                  if (gamepad2.right_trigger > 0.01) {
+                    relictwist.setPower(gamepad2.right_trigger * .79);
+                    twisting = true;
+                } else if (gamepad2.left_trigger > 0.01) {
+                 relictwist.setPower(gamepad2.left_trigger * -.79);
+                    twisting = true;
+                } else if (twisting) {
+                    twisting = false;
+                    relictwist.getController().pwmDisable();
+                }
+
+                if (gamepad2.dpad_up)  {
+                    relicvertical.setPosition(.1);
+                }else if (gamepad2.dpad_down) {
+                    relicvertical.setPosition(.9);
+                }
+
+
+                if (gamepad2.left_bumper){
+                    relicpick.setPosition(.9);
+                }else if (gamepad2.right_bumper){
+                    relicpick.setPosition(.2);
+                }
 
 
 
 
 
 
+            }
 
-            // Send calculated power to wheels
             leftDrive.setPower(leftPower);
             rightDrive.setPower(rightPower);
-              // Show the elapsed game time and wheel power.
+            // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();
+
         }
     }
 }

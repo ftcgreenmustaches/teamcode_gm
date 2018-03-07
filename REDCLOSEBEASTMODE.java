@@ -73,8 +73,8 @@ public class REDCLOSEBEASTMODE extends LinearOpMode {
     private DcMotor rightDrive = null;
     private DcMotor backmotorleft = null;
     private DcMotor backmotorright = null;
-    private Servo servotest = null;
-    private Servo servoturn = null;
+    private Servo jewelextend = null;
+    private Servo jewelknock = null;
     private BNO055IMU imu;
     private DcMotor armDrive1;
     private DcMotor armDrive2;
@@ -97,8 +97,8 @@ public class REDCLOSEBEASTMODE extends LinearOpMode {
         rightDrive = hardwareMap.get(DcMotor.class, "motorright");
         backmotorleft = hardwareMap.get(DcMotor.class, "backmotorleft");
         backmotorright = hardwareMap.get(DcMotor.class, "backmotorright");
-        servotest = hardwareMap.get(Servo.class, "servotest");
-        servoturn = hardwareMap.get(Servo.class, "servoturn");
+        jewelextend = hardwareMap.get(Servo.class, "jewelextend");
+        jewelknock = hardwareMap.get(Servo.class, "jewelknock");
         armDrive1 = hardwareMap.get(DcMotor.class, "armmotor1");
         armDrive2 = hardwareMap.get(DcMotor.class, "armmotor2");
         armDrive3 = hardwareMap.get(DcMotor.class, "armmotor3");
@@ -163,42 +163,48 @@ public class REDCLOSEBEASTMODE extends LinearOpMode {
             // { vuMark = RelicRecoveryVuMark.CENTER; }
 
             //   sleep(1000);
-            servotest.setPosition(0.175);
-            setDriveSpeed(0, 0);
-            sleep(700);
-            if (colorsensor.red() > colorsensor.blue()) {
+            jewelextend.setPosition(0.275);
+            sleep(2000);
 
-                servoturn.setPosition(.3);
-                sleep(850);
-                servotest.setPosition(.3);
-                sleep(850);
-                servoturn.setPosition(0.5);
-                sleep(850);
+            if (colorsensor.red() < colorsensor.blue()) {
+
+                jewelknock.setPosition(0.3);
+                sleep(1000);
+                jewelextend.setPosition(0.5);
+                sleep(1000);
+                jewelknock.setPosition(0.5);
+                sleep(1000);;
+                jewelextend.setPosition(.8);
+                sleep(900);
             } else {
-                servoturn.setPosition(.7);
-                sleep(850);
-                servotest.setPosition(.3);
-                sleep(850);
-                servoturn.setPosition(0.5);
-                sleep(850);
-            }
+                jewelextend.setPosition(0.275);
+                sleep(900);
+                jewelknock.setPosition(0.7);
+                sleep(1000);
+                jewelextend.setPosition(0.5);
+                sleep(900);
+                jewelknock.setPosition(0.5);
+                sleep(1000);
 
+                jewelextend.setPosition(.8);
+                sleep(1000);
+            }
             while (vuMark == RelicRecoveryVuMark.UNKNOWN && vuTries > 0) {
                 vuMark = RelicRecoveryVuMark.from(relicTemplate);
                 vuTries -= 1;
             }
 
-            servotest.setPosition(1);
-            sleep(1000);
+            jewelextend.setPosition(1);
+            sleep(700);
 
 
             setDriveSpeed(0.35, 0.35);
-            sleep(1000);
+            sleep(700);
 
 
-            backmotorleft.setPower(.3);
-            backmotorright.setPower(.3);
-            sleep(1200);
+            backmotorleft.setPower(-.3);
+            backmotorright.setPower(-.3);
+            sleep(800);
 
             backmotorleft.setPower(0);
             backmotorright.setPower(0);
