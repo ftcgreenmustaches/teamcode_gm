@@ -163,8 +163,13 @@ public class REDCLOSEBEASTMODE extends LinearOpMode {
             // { vuMark = RelicRecoveryVuMark.CENTER; }
 
             //   sleep(1000);
+            jewelextend.setPosition(0.5);
+            sleep(1000);
+
+            jewelknock.setPosition(0.5);
+            sleep(1000);
             jewelextend.setPosition(0.275);
-            sleep(2000);
+            sleep(1000);
 
             if (colorsensor.red() < colorsensor.blue()) {
 
@@ -323,8 +328,8 @@ sleep(300);
                 setDriveSpeed(TURN_SPEED, -TURN_SPEED);}
 
                 setDriveSpeed(0.7,0.7);
-            armDrive3.setPower(-0.95);
-            armDrive4.setPower(0.95);
+            armDrive3.setPower(-1);
+            armDrive4.setPower(1);
             sleep(1450);
 
             armDrive3.setPower(0);

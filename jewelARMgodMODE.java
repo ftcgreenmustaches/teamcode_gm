@@ -59,9 +59,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Autonomous(name = "BLUEcloseBEASTMODE", group = "LinearOpMode")
+@Autonomous(name = "Jewel Arm GODMODE", group = "Sensor")
 //@Disabled
-public class BLUECLOSEBEASTMODE extends LinearOpMode {
+public class jewelARMgodMODE extends LinearOpMode {
+
     public static final double JEWEL_SPEED = 0.35;
     public static final int JEWEL_TIME = 500;
     public static final double CR_DOWN = -0.75;
@@ -78,8 +79,6 @@ public class BLUECLOSEBEASTMODE extends LinearOpMode {
     private BNO055IMU imu;
     private DcMotor armDrive1;
     private DcMotor armDrive2;
-    private DcMotor armDrive3;
-    private DcMotor armDrive4;
     private VuforiaTrackable relicTemplate = null;
 
     //private TouchSensor digitaltouch=null;
@@ -101,9 +100,6 @@ public class BLUECLOSEBEASTMODE extends LinearOpMode {
         jewelknock = hardwareMap.get(Servo.class, "jewelknock");
         armDrive1 = hardwareMap.get(DcMotor.class, "armmotor1");
         armDrive2 = hardwareMap.get(DcMotor.class, "armmotor2");
-        armDrive3 = hardwareMap.get(DcMotor.class, "armmotor3");
-        armDrive4 = hardwareMap.get(DcMotor.class, "armmotor4");
-
         //digitaltouch=hardwareMap.get(TouchSensor.class, "digitaltouch")
 
         armDrive2.setDirection(DcMotor.Direction.FORWARD);
@@ -154,6 +150,7 @@ public class BLUECLOSEBEASTMODE extends LinearOpMode {
 
         double speed = 0;
         while (opModeIsActive() && firsttime == 1) {
+            sleep(500);
             int vuTries = 10;
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
 
@@ -163,245 +160,61 @@ public class BLUECLOSEBEASTMODE extends LinearOpMode {
 
             //   sleep(1000);
             jewelextend.setPosition(0.5);
-            sleep(1000);
+            sleep(150);
 
-jewelknock.setPosition(0.5);
-sleep(1000);
+            jewelknock.setPosition(0.5);
+            sleep(150);
             jewelextend.setPosition(0.275);
-            sleep(1000);
+            sleep(500);
+
 
             if (colorsensor.red() > colorsensor.blue()) {
 
-                jewelknock.setPosition(0.3);
-                sleep(700);
-                jewelextend.setPosition(0.5);
-                sleep(500);
-                jewelknock.setPosition(0.5);
-                sleep(750);
-                jewelextend.setPosition(.8);
-                sleep(600);
-            } else {
-                jewelknock.setPosition(0.7);
-                sleep(1000);
+                jewelknock.setPosition(0.4);
+                sleep(350);
                 jewelextend.setPosition(0.6);
-                sleep(1000);
+                sleep(650);
                 jewelknock.setPosition(0.5);
-                sleep(600);
+                sleep(350);
                 jewelextend.setPosition(.8);
-                sleep(400);
+                sleep(350);
+            } else {
+                jewelknock.setPosition(0.6);
+                sleep(350);
+                jewelextend.setPosition(0.6);
+                sleep(650);
+                jewelknock.setPosition(0.5);
+                sleep(350);
+                jewelextend.setPosition(.8);
+                sleep(350);
+
+
             }
-
-            while (vuMark == RelicRecoveryVuMark.UNKNOWN && vuTries > 0) {
-                vuMark = RelicRecoveryVuMark.from(relicTemplate);
-                vuTries -= 1;
-            }
-
-            jewelextend.setPosition(1);
-            sleep(1000);
-
-
-            setDriveSpeed(-0.35, -0.35);
-            sleep(1000);
-
-
-            backmotorleft.setPower(-.3);
-            backmotorright.setPower(-.3);
-            sleep(1200);
-
-            backmotorleft.setPower(0);
-            backmotorright.setPower(0);
-            sleep(100);
-
-            setDriveSpeed(0.35, 0.35);
-            sleep(1600);
-            backmotorright.setPower(0);
-
-            setDriveSpeed(0, 0);
-            sleep(600);
-
-
-            telemetry.addData("Color", "" + colorsensor2.red() + " / " + colorsensor2.green() + " / " + colorsensor2.blue());
-            telemetry.update();
-            colorsensor2.red();
-            colorsensor2.blue();
-            colorsensor2.green();
-
-            final double HEADING_EPSILON = 2.5;// Original=1.5
-            final double TURN_SPEED = .5;
             if (vuMark == RelicRecoveryVuMark.CENTER) {
-                setDriveSpeed(-0.3, -0.3);
-                sleep(1100);
-                setDriveSpeed(0, 0);
-                sleep(100);
 
                 telemetry.addData("CENTER", RelicRecoveryVuMark.CENTER);
                 telemetry.update();
-                while (Math.abs(getHeading() + 68) > HEADING_EPSILON) {
-                    setDriveSpeed(0.35, -0.35);
-                }
+
             } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                setDriveSpeed(-0.3, -0.3);
-                sleep(1450);
+                sleep(1100);
                 telemetry.addData("RIGHT", RelicRecoveryVuMark.RIGHT);
                 telemetry.update();
-                while (Math.abs(getHeading() + 80) > HEADING_EPSILON) {
-                    setDriveSpeed(0.35, -0.35);
-                }
+
+
             } else if (vuMark == RelicRecoveryVuMark.LEFT) {
-                setDriveSpeed(-0.3, -0.3);
-                sleep(500);
+
                 telemetry.addData("LEFT", RelicRecoveryVuMark.LEFT);
                 telemetry.update();
-                while (Math.abs(getHeading() + 80) > HEADING_EPSILON) {
-                    setDriveSpeed(0.35, -0.35);
-                }
-            } else {
+            }
+             else {
                 telemetry.addData("Unknown", 0);
                 telemetry.update();
-                setDriveSpeed(-0.3, -0.3);
-                sleep(1100);
-                sleep(100);
-                while (Math.abs(getHeading() + 80) > HEADING_EPSILON) {
-                    setDriveSpeed(0.35, -0.35);
+
                 }
-            }
-            setDriveSpeed(0, 0);
-            sleep(100);
-
-            setDriveSpeed(0.3, 0.3);
-            sleep(350);
 
 
-            armDrive2.setPower(-0.8);
-            sleep(500);
-            armDrive1.setPower(-0.8);
-            armDrive2.setPower(-0.8);
-            sleep(701);
-            armDrive1.setPower(0);
-            armDrive2.setPower(0);
-            sleep(100);
-            setDriveSpeed(-0.3, -0.3);
-            sleep(400);
-            armDrive1.setPower(-0.8);
-            armDrive2.setPower(-0.8);
-            sleep(500);
-            armDrive1.setPower(0);
-            armDrive2.setPower(0);
 
-            setDriveSpeed(0, 0);
-            sleep(1000);
-
-            while (Math.abs(getHeading() - 102.5) > HEADING_EPSILON) {
-                setDriveSpeed(0.4, -0.4);
-            }
-
-            setDriveSpeed(0.75, 0.75);
-            armDrive1.setPower(0.8);
-            armDrive2.setPower(0.8);
-            sleep(1300);
-
-            setDriveSpeed(0, 0);
-            armDrive1.setPower(0);
-            armDrive2.setPower(0);
-            sleep(700);
-
-            armDrive1.setPower(0.8);
-            armDrive2.setPower(0.8);
-            sleep(850);
-
-
-            armDrive1.setPower(0);
-            armDrive2.setPower(0);
-            sleep(300);
-
-
-            setDriveSpeed(-0.4, -0.4);
-            armDrive3.setPower(-0.5);
-            armDrive4.setPower(0.5);
-            sleep(300);
-
-            armDrive3.setPower(0);
-            armDrive4.setPower(0);
-
-            while (Math.abs(getHeading() + 66) > HEADING_EPSILON) {
-                setDriveSpeed(TURN_SPEED, -TURN_SPEED);
-            }
-
-            setDriveSpeed(0.7, 0.7);
-            armDrive3.setPower(-0.95);
-            armDrive4.setPower(0.95);
-            sleep(1450);
-
-            armDrive3.setPower(0);
-            armDrive4.setPower(0);
-
-            setDriveSpeed(0, 0);
-
-            armDrive1.setPower(-0.8);
-            armDrive2.setPower(-0.8);
-            sleep(600);
-            armDrive1.setPower(0);
-            armDrive2.setPower(0);
-
-            armDrive1.setPower(-0.8);
-            armDrive2.setPower(-0.8);
-
-            setDriveSpeed(0.3, 0.3);
-            sleep(300);
-
-            setDriveSpeed(0, 0);
-
-            armDrive1.setPower(0);
-            armDrive2.setPower(0);
-
-            setDriveSpeed(-0.27, -0.27);
-            armDrive1.setPower(-1);
-            armDrive2.setPower(-1);
-            sleep(200);
-
-            firsttime = 0;
-        }
-    }
-
-
-    boolean isGray() {
-        final double COLOR_EPSILON = 60;
-
-        if (Math.abs(colorsensor2.red() - colorsensor2.blue()) > COLOR_EPSILON) {
-            return false;
         }
 
-        if (Math.abs(colorsensor2.red() - colorsensor2.green()) > COLOR_EPSILON) {
-            return false;
-        }
-
-        if (Math.abs(colorsensor2.blue() - colorsensor2.green()) > COLOR_EPSILON) {
-            return false;
-        }
-
-        // must be gray
-        return true;
-    }
-
-    double getHeading() {
-        return imu.getAngularOrientation().firstAngle;
-    }
-
-    void setDriveSpeed(double left, double right) {
-        leftDrive.setPower(left);
-//        leftDrive2.setPower(left * 0.9);
-        rightDrive.setPower(-right);
-//        rightDrive2.setPower(right * 0.9);
-    }
-
-    void setBackSpeed(double left, double right) {
-        backmotorleft.setPower(-left);
-//        leftDrive2.setPower(left * 0.9);
-        backmotorright.setPower(right);
-//        rightDrive2.setPower(right * 0.9);
     }
 }
-//});
-
-//}
-//        }

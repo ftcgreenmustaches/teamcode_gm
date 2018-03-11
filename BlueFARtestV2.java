@@ -84,8 +84,8 @@ public class BlueFARtestV2 extends LinearOpMode {
     private DcMotor rightDrive = null;
     private DcMotor backmotorleft = null;
     private DcMotor backmotorright = null;
-    private Servo servotest = null;
-    private Servo servoturn = null;
+    private Servo jewelextend = null;
+    private Servo jewelknock = null;
     private BNO055IMU imu;
     private DcMotor armDrive1;
     private DcMotor armDrive2;
@@ -106,8 +106,8 @@ public class BlueFARtestV2 extends LinearOpMode {
         rightDrive = hardwareMap.get(DcMotor.class, "motorright");
         backmotorleft = hardwareMap.get(DcMotor.class, "backmotorleft");
         backmotorright = hardwareMap.get(DcMotor.class, "backmotorright");
-        servotest = hardwareMap.get(Servo.class, "servotest");
-        servoturn = hardwareMap.get(Servo.class, "servoturn");
+        jewelextend = hardwareMap.get(Servo.class, "jewelextend");
+        jewelknock = hardwareMap.get(Servo.class, "jewelknock");
         armDrive1 = hardwareMap.get(DcMotor.class, "armmotor1");
         armDrive2 = hardwareMap.get(DcMotor.class, "armmotor2");
         //digitaltouch=hardwareMap.get(TouchSensor.class, "digitaltouch")
@@ -170,28 +170,38 @@ public class BlueFARtestV2 extends LinearOpMode {
             // { vuMark = RelicRecoveryVuMark.CENTER; }
 
             //   sleep(1000);
-            servotest.setPosition(0.175);
-            setDriveSpeed(0, 0);
-            sleep(1000);
-            if (colorsensor.red() <  colorsensor.blue()) {
+            jewelextend.setPosition(0.5);
+            sleep(350);
 
-                servoturn.setPosition(.3);
-                sleep(1000);
-                servotest.setPosition(.3);
-                sleep(1000);
-                servoturn.setPosition(0.5);
-                sleep(1000);
+            jewelknock.setPosition(0.5);
+            sleep(350);
+            jewelextend.setPosition(0.275);
+            sleep(350);
+
+
+            if (colorsensor.red() > colorsensor.blue()) {
+
+                jewelknock.setPosition(0.3);
+                sleep(650);
+                jewelextend.setPosition(0.5);
+                sleep(350);
+                jewelknock.setPosition(0.5);
+                sleep(350);
+                jewelextend.setPosition(.8);
+                sleep(350);
             } else {
-                servoturn.setPosition(.7);
-                sleep(1000);
-                servotest.setPosition(.3);
-                sleep(1000);
-                servoturn.setPosition(0.5);
-                sleep(1000);
+                jewelknock.setPosition(0.7);
+                sleep(650);
+                jewelextend.setPosition(0.6);
+                sleep(350);
+                jewelknock.setPosition(0.5);
+                sleep(350);
+                jewelextend.setPosition(.8);
+                sleep(350);
             }
 
-            servotest.setPosition(1);
-            sleep(2000);
+            jewelextend.setPosition(1);
+            sleep(350);
 
             while (vuMark == RelicRecoveryVuMark.UNKNOWN && vuTries > 0) {
                 vuMark = RelicRecoveryVuMark.from(relicTemplate);
@@ -205,7 +215,7 @@ public class BlueFARtestV2 extends LinearOpMode {
 
             backmotorleft.setPower(-.5);
             backmotorright.setPower(-.5);
-            sleep(600);
+            sleep(300);
 
             backmotorleft.setPower(0);
             backmotorright.setPower(0);
@@ -217,11 +227,11 @@ public class BlueFARtestV2 extends LinearOpMode {
             sleep(600);
 
             setDriveSpeed(-0.4, -0.4);
-            sleep(800);
+            sleep(900);
 
             final double HEADING_EPSILON = 1.5;
-            final double TURN_SPEED = 0.25;
-            while (Math.abs(getHeading() - 90  ) > HEADING_EPSILON)
+            final double TURN_SPEED = 0.4;
+            while (Math.abs(getHeading() - 80  ) > HEADING_EPSILON)
             {
                 setDriveSpeed(-TURN_SPEED, TURN_SPEED);
 
@@ -235,16 +245,16 @@ public class BlueFARtestV2 extends LinearOpMode {
             colorsensor2.blue();
             colorsensor2.green();
 
-            while (isGray()) {
-                setDriveSpeed(0.25, 0.25);
+                while (isGray()) {
+                    setDriveSpeed(0.25, 0.25);
+                    speed += 0.015;
+                    sleep(100);
+                    telemetry.addData("Color", "gray");
+                    telemetry.update();
+                }
 
 
-                sleep(100);
-                telemetry.addData("Color", "gray");
-                telemetry.update();
-            }
-
-            telemetry.addData("Color", "not gray");
+                telemetry.addData("Color", "not gray");
             telemetry.update();
 
             setDriveSpeed(0, 0);
@@ -312,8 +322,8 @@ public class BlueFARtestV2 extends LinearOpMode {
 
 
     boolean isGray() {
-        final double COLOR_EPSILON = 60;
-
+        final double COLOR_EPSILON = 15;
+//60
         if (Math.abs(colorsensor2.red() - colorsensor2.blue()) > COLOR_EPSILON) {
             return false;
         }

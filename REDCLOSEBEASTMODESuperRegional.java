@@ -162,28 +162,36 @@ public class REDCLOSEBEASTMODESuperRegional extends LinearOpMode {
             // { vuMark = RelicRecoveryVuMark.CENTER; }
 
             //   sleep(1000);
+            jewelextend.setPosition(0.5);
+            sleep(150);
+
+            jewelknock.setPosition(0.5);
+            sleep(150);
             jewelextend.setPosition(0.275);
-            sleep(2000);
+            sleep(500);
 
-            if (colorsensor.red() < colorsensor.blue()) {
 
-                jewelknock.setPosition(0.3);
-                sleep(700);
-                jewelextend.setPosition(0.5);
-                sleep(500);
-                jewelknock.setPosition(0.5);
-                sleep(750);
-                jewelextend.setPosition(.8);
-                sleep(600);
-            } else {
-                jewelknock.setPosition(0.7);
-                sleep(1000);
+            if (colorsensor.red() > colorsensor.blue()) {
+
+                jewelknock.setPosition(0.4);
+                sleep(350);
                 jewelextend.setPosition(0.6);
-               sleep(1000);
+                sleep(650);
                 jewelknock.setPosition(0.5);
-                sleep(600);
+                sleep(350);
                 jewelextend.setPosition(.8);
-                sleep(400);
+                sleep(350);
+            } else {
+                jewelknock.setPosition(0.6);
+                sleep(350);
+                jewelextend.setPosition(0.6);
+                sleep(650);
+                jewelknock.setPosition(0.5);
+                sleep(350);
+                jewelextend.setPosition(.8);
+                sleep(350);
+
+
             }
             while (vuMark == RelicRecoveryVuMark.UNKNOWN && vuTries > 0) {
                 vuMark = RelicRecoveryVuMark.from(relicTemplate);

@@ -161,8 +161,14 @@ public class REDFARtestV2 extends LinearOpMode {
                 // { vuMark = RelicRecoveryVuMark.CENTER; }
 
                 //   sleep(1000);
+                jewelextend.setPosition(0.5);
+                sleep(1000);
+
+                jewelknock.setPosition(0.5);
+                sleep(1000);
                 jewelextend.setPosition(0.275);
-                sleep(2000);
+                sleep(1000);
+
 
                 if (colorsensor.red() < colorsensor.blue()) {
 
@@ -213,7 +219,7 @@ public class REDFARtestV2 extends LinearOpMode {
                 sleep(500);
                 final double HEADING_EPSILON = 1.5;
                 final double TURN_SPEED = 0.4;
-                while (Math.abs(getHeading() - 85) > HEADING_EPSILON) {
+                while (Math.abs(getHeading() - 90) > HEADING_EPSILON) {
                     setDriveSpeed(-0.4, 0.4);
 
                 }
@@ -236,24 +242,24 @@ public class REDFARtestV2 extends LinearOpMode {
 
 
                 if (vuMark == RelicRecoveryVuMark.CENTER) {
-                    setDriveSpeed(0.3, 0.3);
-                    sleep(1200);
+                    setDriveSpeed(0.5, 0.5);
+                    sleep(950);
                     telemetry.addData("CENTER", RelicRecoveryVuMark.CENTER);
                     telemetry.update();
                     while (Math.abs(getHeading() + 0) > HEADING_EPSILON) {
                         setDriveSpeed(TURN_SPEED, -TURN_SPEED);
                     }
                 } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                    setDriveSpeed(0.3, 0.3);
-                    sleep(600);
+                    setDriveSpeed(0.5, 0.5);
+                    sleep(650);
                     telemetry.addData("RIGHT", RelicRecoveryVuMark.RIGHT);
                     telemetry.update();
                     while (Math.abs(getHeading() + 0) > HEADING_EPSILON) {
                         setDriveSpeed(TURN_SPEED, -TURN_SPEED);
                     }
                 } else if (vuMark == RelicRecoveryVuMark.LEFT) {
-                    setDriveSpeed(0.3, 0.3);
-                    sleep(1950);
+                    setDriveSpeed(0.5, 0.5);
+                    sleep(1500);
                     telemetry.addData("LEFT", RelicRecoveryVuMark.LEFT);
                     telemetry.update();
                     while (Math.abs(getHeading() + 0) > HEADING_EPSILON) {
@@ -262,8 +268,8 @@ public class REDFARtestV2 extends LinearOpMode {
                 } else {
                     telemetry.addData("Unknown", 0);
                     telemetry.update();
-                    setDriveSpeed(0.3, 0.3);
-                    sleep(1790);
+                    setDriveSpeed(0.5, 0.5);
+                    sleep(975);
                     while (Math.abs(getHeading() - 7) > HEADING_EPSILON) {
                         setDriveSpeed(TURN_SPEED, -TURN_SPEED);
                     }

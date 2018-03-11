@@ -31,6 +31,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.preference.PreferenceScreen;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -40,39 +42,46 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import java.sql.Driver;
+
 /**
  * Created by GM on 11/1/2017.
  * Program name : Teleop 2 Drivers progra
  * Purpose :
  * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
  * It includes all the code for picking and dispensing .
- *
  */
 
 
-@TeleOp(name="TELEOP ModeTest", group="Linear Opmode")
+@TeleOp(name = "TELEOP ModeTest", group = "Linear Opmode")
 public class TeleopDifferentModeTest extends LinearOpMode {
 
     // Declare OpMode members.
+    private double servoPosition;
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
     private DcMotor armDrive1 = null;
-    private DcMotor armDrive2 =null;
-    private DcMotor armDrive3=null;
-    private DcMotor armDrive4=null;
-   //1 private Servo servoTest;
-    private DcMotor backmotorleft=null;
-    private DcMotor backmotorright=null;
+    private DcMotor armDrive2 = null;
+    private DcMotor armDrive3 = null;
+    private DcMotor armDrive4 = null;
+    //1 private Servo servoTest;
+    private DcMotor backmotorleft = null;
+    private DcMotor backmotorright = null;
     private DigitalChannel tsensor;
     CRServo relictwist;
-    Servo relicvertical;
+    CRServo relicvertical;
     CRServo relicextend;
     Servo relicpick;
     boolean extending = false;
     boolean twisting = false;
     boolean rising = false;
     boolean endgame = false;
+    boolean pickrelic = false;
+    boolean droprelic = false;
+    boolean increments = false;
+    private double servoDelta = 0.1;
+    private double servoDelayTime = 0.01;
 
     //Servo relicpick;
     //private TouchSensor tsensor;
@@ -80,29 +89,28 @@ public class TeleopDifferentModeTest extends LinearOpMode {
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-
+        this.servoPosition = 0.5;
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        leftDrive  = hardwareMap.get(DcMotor.class, "motorleft");
+        leftDrive = hardwareMap.get(DcMotor.class, "motorleft");
         rightDrive = hardwareMap.get(DcMotor.class, "motorright");
-        armDrive1=hardwareMap.get(DcMotor.class, "armmotor1");
-        armDrive2=hardwareMap.get(DcMotor.class, "armmotor2");
-    //    servoTest=hardwareMap.get(Servo.class, "servotest");
-        armDrive3=hardwareMap.get(DcMotor.class, "armmotor3");
-        armDrive4=hardwareMap.get(DcMotor.class, "armmotor4");
-        backmotorleft=hardwareMap.get(DcMotor.class,"backmotorleft");
-        backmotorright=hardwareMap.get(DcMotor.class, "backmotorright");
+        armDrive1 = hardwareMap.get(DcMotor.class, "armmotor1");
+        armDrive2 = hardwareMap.get(DcMotor.class, "armmotor2");
+        //    servoTest=hardwareMap.get(Servo.class, "servotest");
+        armDrive3 = hardwareMap.get(DcMotor.class, "armmotor3");
+        armDrive4 = hardwareMap.get(DcMotor.class, "armmotor4");
+        backmotorleft = hardwareMap.get(DcMotor.class, "backmotorleft");
+        backmotorright = hardwareMap.get(DcMotor.class, "backmotorright");
         tsensor = hardwareMap.get(DigitalChannel.class, "digitaltouch");
         relictwist = hardwareMap.get(CRServo.class, "relictwist");
-        relicvertical=hardwareMap.get(Servo.class,"relicvertical");
-        relicextend=hardwareMap.get(CRServo.class,"relicextend");
-        relicpick=hardwareMap.get(Servo.class, "relicpick");
-     //   relicpick=hardwareMap.get(Servo.class,"relickpick");
+        relicvertical = hardwareMap.get(CRServo.class, "relicvertical");
+        relicextend = hardwareMap.get(CRServo.class, "relicextend");
+        relicpick = hardwareMap.get(Servo.class, "relicpick");
+        //   relicpick=hardwareMap.get(Servo.class,"relickpick");
 
         int counter = 0;
         endgame = false;
-
         // Reverse the motor that runs backwards when connected directly to the battery
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -114,9 +122,9 @@ public class TeleopDifferentModeTest extends LinearOpMode {
         backmotorleft.setDirection(DcMotor.Direction.REVERSE);
 
         //determine the zeropowerbehavior
-        boolean brake=true;
+        boolean brake = true;
         DcMotor.ZeroPowerBehavior zeroPowerBehavior;
-        if(brake) {
+        if (brake) {
             zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
         } else {
             zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT;
@@ -125,42 +133,17 @@ public class TeleopDifferentModeTest extends LinearOpMode {
 
         boolean extending = false;
         boolean twisting = false;
+        boolean increments = false;
+        boolean pickrelic = false;
+        boolean droprelic = false;
+        boolean vertical =false;
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            // Setup a variable for each drive wheel to save power level for telemetry
-            double leftPower;
-            double rightPower;
 
-            // Choose to drive using either Tank Mode, or POV Mode
-            // Comment out the method that's not used.  The default below is POV.
-
-            // POV Mode uses left stick to go forward, and right stick to turn.
-            // - This uses basic math to combine motions and is easier to drive straight.
-            double drive = -gamepad1.left_stick_y;
-            double turn = gamepad1.right_stick_x;
-
-            leftPower = Range.clip(drive + turn, -1.0, 1.0);
-            rightPower = Range.clip(drive - turn, -1.0, 1.0);
-
-
-            // Tank aMode uses one stick to control each wheel.
-            //- This requires no math, but it is hard to drive forward slowly and keep straight.
-            // leftPower  = -gamepad1.left_stick_y ;
-            //rightPower = -gamepad1.right_stick_y ;
-            if (gamepad1.dpad_up) {
-                backmotorleft.setPower(1);
-                backmotorright.setPower(1);
-            } else if (gamepad1.dpad_down) {
-                backmotorright.setPower(-1);
-                backmotorleft.setPower(-1);
-            } else {
-                backmotorleft.setPower(0);
-                backmotorright.setPower(0);
-            }
 
             if (gamepad2.left_stick_button) {
                 endgame = true;
@@ -169,7 +152,36 @@ public class TeleopDifferentModeTest extends LinearOpMode {
             }
 
             if (!endgame) {
+                // Setup a variable for each drive wheel to save power level for telemetry
+                double leftPower;
+                double rightPower;
 
+                // Choose to drive using either Tank Mode, or POV Mode
+                // Comment out the method that's not used.  The default below is POV.
+
+                // POV Mode uses left stick to go forward, and right stick to turn.
+                // - This uses basic math to combine motions and is easier to drive straight.
+                double drive = -gamepad1.left_stick_y;
+                double turn = gamepad1.right_stick_x;
+
+                leftPower = Range.clip(drive + turn, -1.0, 1.0);
+                rightPower = Range.clip(drive - turn, -1.0, 1.0);
+
+
+                // Tank aMode uses one stick to control each wheel.
+                //- This requires no math, but it is hard to drive forward slowly and keep straight.
+                // leftPower  = -gamepad1.left_stick_y ;
+                //rightPower = -gamepad1.right_stick_y ;
+                if (gamepad1.dpad_up) {
+                    backmotorleft.setPower(1);
+                    backmotorright.setPower(1);
+                } else if (gamepad1.dpad_down) {
+                    backmotorright.setPower(-1);
+                    backmotorleft.setPower(-1);
+                } else {
+                    backmotorleft.setPower(0);
+                    backmotorright.setPower(0);
+                }
 
                 if (gamepad2.right_bumper) {
                     armDrive1.setPower(0.7);
@@ -204,18 +216,22 @@ public class TeleopDifferentModeTest extends LinearOpMode {
 
                 }
 
-
+                leftDrive.setPower(leftPower);
+                rightDrive.setPower(rightPower);
+                // Show the elapsed game time and wheel power.
+                telemetry.addData("Status", "Run Time: " + runtime.toString());
+                telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+                telemetry.update();
 
 
             } else {   //must be endgame
 
 
-
-                if (-gamepad2.left_stick_y > 0.01) {
-                    relicextend.setPower(-gamepad2.left_stick_y * -0.99);
+                if (-gamepad1.left_stick_y > 0.01) {
+                    relicextend.setPower(-gamepad1.left_stick_y * -0.99);
                     extending = true;
-                } else if (gamepad2.left_stick_y>0.1) {
-                    relicextend.setPower(gamepad2.left_stick_y*0.79);
+                } else if (gamepad1.left_stick_y > 0.1) {
+                    relicextend.setPower(gamepad1.left_stick_y * 0.79);
                     extending = true;
                 } else if (extending) {
                     extending = false;
@@ -235,47 +251,105 @@ public class TeleopDifferentModeTest extends LinearOpMode {
                     relictwist.getController().pwmDisable();
                 }
 */
-                  if (gamepad2.right_trigger > 0.01) {
-                    relictwist.setPower(gamepad2.right_trigger * .79);
+                if (gamepad1.right_trigger > 0.01) {
+                    relictwist.setPower(gamepad1.right_trigger * .79);
                     twisting = true;
-                } else if (gamepad2.left_trigger > 0.01) {
-                 relictwist.setPower(gamepad2.left_trigger * -.79);
+                } else if (gamepad1.left_trigger > 0.01) {
+                    relictwist.setPower(gamepad1.left_trigger * -.79);
                     twisting = true;
                 } else if (twisting) {
                     twisting = false;
                     relictwist.getController().pwmDisable();
                 }
 
-                if (gamepad2.dpad_up)  {
-                    relicvertical.setPosition(.1);
-                }else if (gamepad2.dpad_down) {
-                    relicvertical.setPosition(.9);
+                if (gamepad1.dpad_up) {
+                    relicvertical.setPower(-0.5);
+                    vertical = true;
+                } else if (gamepad1.dpad_down) {
+                    relicvertical.setPower(0.5);
+                    vertical = true;
+                }else if (vertical) {
+                    vertical = false;
+                    relictwist.getController().pwmDisable();
                 }
 
 
-                if (gamepad2.left_bumper){
+                //   if (gamepad2.y) {
+                //     relicvertical.setPosition(.5);
+//               /     servoPosition += servoDelta;
+                // clip the position values so that they never exceed 0..1
+                //                  servoPosition = Range.clip(servoPosition, 0, 1);
+                ////                relicvertical.setPosition(servoPosition);
+//
+                //                   relicvertical.setPosition(relicvertical.getPosition() - .05);
+                //                 increments = true;
+
+  //              if (increments) {
+    //                increments = false;
+      //          }
+
+
+                if (gamepad1.left_bumper) {
                     relicpick.setPosition(.9);
-                }else if (gamepad2.right_bumper){
+                } else if (gamepad1.right_bumper) {
                     relicpick.setPosition(.2);
                 }
 
+                if (gamepad1.a) {
+                    droprelic = true;
+                    relicextend.setPower(.79);
+                    sleep(400);
+                    relicvertical.setPower(-.5);
+                    relicextend.setPower(0.79);
+                    sleep(400);
+                    relictwist.setPower(.79);
+                    sleep(500);
+                }
+                    // Setup a variable for each drive wheel to save power level for telemetry
+                    double leftPower;
+                    double rightPower;
+
+                    // Choose to drive using either Tank Mode, or POV Mode
+                    // Comment out the method that's not used.  The default below is POV.
+
+                    // POV Mode uses left stick to go forward, and right stick to turn.
+                    // - This uses basic math to combine motions and is easier to drive straight.
+                    double drive = -gamepad2.left_stick_y;
+                    double turn = gamepad2.right_stick_x;
+
+                    leftPower = Range.clip(drive + turn, -1.0, 1.0);
+                    rightPower = Range.clip(drive - turn, -1.0, 1.0);
 
 
+                    // Tank aMode uses one stick to control each wheel.
+                    //- This requires no math, but it is hard to drive forward slowly and keep straight.
+                    // leftPower  = -gamepad1.left_stick_y ;
+                    //rightPower = -gamepad1.right_stick_y ;
+                    if (gamepad2.dpad_up) {
+                        backmotorleft.setPower(1);
+                        backmotorright.setPower(1);
+                    } else if (gamepad2.dpad_down) {
+                        backmotorright.setPower(-1);
+                        backmotorleft.setPower(-1);
+                    } else {
+                        backmotorleft.setPower(0);
+                        backmotorright.setPower(0);
+                    }
 
-
-
+                leftDrive.setPower(leftPower);
+                rightDrive.setPower(rightPower);
+                // Show the elapsed game time and wheel power.
+                telemetry.addData("Status", "Run Time: " + runtime.toString());
+                telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+                telemetry.update();
             }
 
-            leftDrive.setPower(leftPower);
-            rightDrive.setPower(rightPower);
-            // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
-            telemetry.update();
 
         }
     }
 }
+
+
 
 
 
