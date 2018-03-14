@@ -36,7 +36,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -81,7 +83,7 @@ public class REDCLOSEBEASTMODESuperRegional extends LinearOpMode {
     private DcMotor armDrive3;
     private DcMotor armDrive4;
     private VuforiaTrackable relicTemplate = null;
-
+private DigitalChannel touchsensor2;
     //private TouchSensor digitaltouch=null;
     @Override
     public void runOpMode() {
@@ -103,7 +105,7 @@ public class REDCLOSEBEASTMODESuperRegional extends LinearOpMode {
         armDrive2 = hardwareMap.get(DcMotor.class, "armmotor2");
         armDrive3 = hardwareMap.get(DcMotor.class, "armmotor3");
         armDrive4 = hardwareMap.get(DcMotor.class, "armmotor4");
-
+touchsensor2=hardwareMap.get(DigitalChannel.class,"touchsensor2");
         //digitaltouch=hardwareMap.get(TouchSensor.class, "digitaltouch")
 
         armDrive2.setDirection(DcMotor.Direction.FORWARD);
@@ -171,7 +173,7 @@ public class REDCLOSEBEASTMODESuperRegional extends LinearOpMode {
             sleep(500);
 
 
-            if (colorsensor.red() > colorsensor.blue()) {
+            if (colorsensor.red() < colorsensor.blue()) {
 
                 jewelknock.setPosition(0.4);
                 sleep(350);
@@ -203,7 +205,7 @@ public class REDCLOSEBEASTMODESuperRegional extends LinearOpMode {
 
 
             setDriveSpeed(0.3, .3);
-            sleep(800);
+            sleep(1100);
 
             setDriveSpeed(0,0);
             sleep(700);
@@ -218,12 +220,12 @@ public class REDCLOSEBEASTMODESuperRegional extends LinearOpMode {
             backmotorright.setPower(0);
             sleep(750);
 
-            setDriveSpeed(-0.5, -0.5);
-            sleep(1000);
-            backmotorright.setPower(0);
+//            setDriveSpeed(-0.5, -0.5);
+  //          sleep(1000);
+    //        backmotorright.setPower(0);
 
-            setDriveSpeed(0, 0);
-            sleep(400);
+      //      setDriveSpeed(0, 0);
+        //    sleep(400);
 
 
             telemetry.addData("Color", "" + colorsensor2.red() + " / " + colorsensor2.green() + " / " + colorsensor2.blue());
@@ -235,7 +237,7 @@ public class REDCLOSEBEASTMODESuperRegional extends LinearOpMode {
             final double HEADING_EPSILON = 2.5;// Original=1.5
             final double TURN_SPEED = .5;
             if (vuMark == RelicRecoveryVuMark.CENTER) {
-                setDriveSpeed(0., 0.3);
+                setDriveSpeed(0.3, 0.3);
                 sleep(1900);
                 setDriveSpeed(0, 0);
                 sleep(100);
@@ -302,11 +304,12 @@ public class REDCLOSEBEASTMODESuperRegional extends LinearOpMode {
             while (Math.abs(getHeading() - 102.5) > HEADING_EPSILON) {
                 setDriveSpeed(0.4, -0.4);
             }
-
             setDriveSpeed(0.65, 0.65);
             armDrive1.setPower(0.8);
             armDrive2.setPower(0.8);
             sleep(1800);
+
+
 
             setDriveSpeed(0, 0);
             armDrive1.setPower(0);
@@ -322,6 +325,7 @@ public class REDCLOSEBEASTMODESuperRegional extends LinearOpMode {
             armDrive2.setPower(0);
             sleep(300);
 
+            if (touchsensor2.getState()==false) {
 
             setDriveSpeed(-0.4, -0.4);
             armDrive3.setPower(-0.5);
@@ -331,43 +335,127 @@ public class REDCLOSEBEASTMODESuperRegional extends LinearOpMode {
             armDrive3.setPower(0);
             armDrive4.setPower(0);
 
-            while (Math.abs(getHeading() + 74) > HEADING_EPSILON) {
-                setDriveSpeed(TURN_SPEED, -TURN_SPEED);
-            }
 
-            setDriveSpeed(0.7, 0.7);
-            armDrive3.setPower(-0.95);
-            armDrive4.setPower(0.95);
-            sleep(1450);
+                while (Math.abs(getHeading() + 74) > HEADING_EPSILON) {
+                    setDriveSpeed(TURN_SPEED, -TURN_SPEED);
+                }
 
-            armDrive3.setPower(0);
-            armDrive4.setPower(0);
+                setDriveSpeed(0.7, 0.7);
+                armDrive3.setPower(-1);
+                armDrive4.setPower(1);
+                sleep(1700);
 
-            setDriveSpeed(0, 0);
+                armDrive3.setPower(0);
+                armDrive4.setPower(0);
 
-            armDrive1.setPower(-0.8);
-            armDrive2.setPower(-0.8);
-            sleep(600);
-            armDrive1.setPower(0);
-            armDrive2.setPower(0);
+                setDriveSpeed(0, 0);
 
-            armDrive1.setPower(-0.8);
-            armDrive2.setPower(-0.8);
+                armDrive1.setPower(-0.8);
+                armDrive2.setPower(-0.8);
+                sleep(600);
+                armDrive1.setPower(0);
+                armDrive2.setPower(0);
 
-            setDriveSpeed(0.3, 0.3);
+                armDrive1.setPower(-0.8);
+                armDrive2.setPower(-0.8);
+
+                setDriveSpeed(0.3, 0.3);
+                sleep(300);
+
+                setDriveSpeed(0, 0);
+
+                armDrive1.setPower(0);
+                armDrive2.setPower(0);
+
+                setDriveSpeed(-0.27, -0.27);
+                armDrive1.setPower(-1);
+                armDrive2.setPower(-1);
+                sleep(200);
+
+
+
+                telemetry.addData("Digital Touch", "Is  Pressed");
+                telemetry.update();
+               firsttime = 0;
+
+            } else {
+
+
+                while (Math.abs(getHeading() - 70) > HEADING_EPSILON) {
+                    setDriveSpeed(TURN_SPEED*.9, -TURN_SPEED*0.9);
+                    telemetry.addData("Digital Touch", "Is NOT Pressed");
+                    telemetry.update();
+                }
+
+            setDriveSpeed(0.3,0.3);
             sleep(300);
 
-            setDriveSpeed(0, 0);
+                armDrive1.setPower(0.8);
+                armDrive2.setPower(0.8);
+                sleep(1009);
 
-            armDrive1.setPower(0);
-            armDrive2.setPower(0);
+                setDriveSpeed(0, 0);
+                armDrive1.setPower(0);
+                armDrive2.setPower(0);
+                sleep(400);
 
-            setDriveSpeed(-0.27, -0.27);
-            armDrive1.setPower(-1);
-            armDrive2.setPower(-1);
-            sleep(200);
+                //          armDrive1.setPower(0.8);
+                armDrive2.setPower(0.8);
+                sleep(850);
 
-            firsttime = 0;
+
+                armDrive1.setPower(0);
+                armDrive2.setPower(0);
+                sleep(300);
+
+                while (Math.abs(getHeading() + 74) > HEADING_EPSILON) {
+                    setDriveSpeed(TURN_SPEED*0.875, -TURN_SPEED*0.875);
+                }
+
+                setDriveSpeed(0.7, 0.7);
+                armDrive3.setPower(-1);
+                armDrive4.setPower(1);
+                sleep(1700);
+
+                armDrive3.setPower(0);
+                armDrive4.setPower(0);
+
+                setDriveSpeed(0, 0);
+
+                armDrive1.setPower(-0.8);
+                armDrive2.setPower(-0.8);
+                sleep(600);
+                armDrive1.setPower(0);
+                armDrive2.setPower(0);
+
+                armDrive1.setPower(-0.8);
+                armDrive2.setPower(-0.8);
+
+                setDriveSpeed(0.3, 0.3);
+                sleep(300);
+
+                setDriveSpeed(0, 0);
+
+                armDrive1.setPower(0);
+                armDrive2.setPower(0);
+
+                setDriveSpeed(-0.27, -0.27);
+                armDrive1.setPower(-1);
+                armDrive2.setPower(-1);
+                sleep(200);
+
+
+
+                telemetry.addData("Digital Touch", "Is  Pressed");
+                telemetry.update();
+                firsttime = 0;
+
+
+
+
+            }
+
+
         }
     }
 

@@ -70,7 +70,7 @@ public class TeleopDifferentModeTest extends LinearOpMode {
     private DcMotor backmotorright = null;
     private DigitalChannel tsensor;
     CRServo relictwist;
-    CRServo relicvertical;
+    Servo relicvertical;
     CRServo relicextend;
     Servo relicpick;
     boolean extending = false;
@@ -102,9 +102,9 @@ public class TeleopDifferentModeTest extends LinearOpMode {
         armDrive4 = hardwareMap.get(DcMotor.class, "armmotor4");
         backmotorleft = hardwareMap.get(DcMotor.class, "backmotorleft");
         backmotorright = hardwareMap.get(DcMotor.class, "backmotorright");
-        tsensor = hardwareMap.get(DigitalChannel.class, "digitaltouch");
+        tsensor = hardwareMap.get(DigitalChannel.class, "touchsensor");
         relictwist = hardwareMap.get(CRServo.class, "relictwist");
-        relicvertical = hardwareMap.get(CRServo.class, "relicvertical");
+        relicvertical = hardwareMap.get(Servo.class, "relicvertical");
         relicextend = hardwareMap.get(CRServo.class, "relicextend");
         relicpick = hardwareMap.get(Servo.class, "relicpick");
         //   relicpick=hardwareMap.get(Servo.class,"relickpick");
@@ -262,7 +262,7 @@ public class TeleopDifferentModeTest extends LinearOpMode {
                     relictwist.getController().pwmDisable();
                 }
 
-                if (gamepad1.dpad_up) {
+              /*  if (gamepad1.dpad_up) {
                     relicvertical.setPower(-0.5);
                     vertical = true;
                 } else if (gamepad1.dpad_down) {
@@ -272,6 +272,15 @@ public class TeleopDifferentModeTest extends LinearOpMode {
                     vertical = false;
                     relictwist.getController().pwmDisable();
                 }
+*/
+              if (gamepad1.dpad_up){
+                  relicvertical.setPosition(.9);
+              }
+
+              if (gamepad1.dpad_down){
+                  relicvertical.setPosition(.1);
+              }
+
 
 
                 //   if (gamepad2.y) {
@@ -299,7 +308,7 @@ public class TeleopDifferentModeTest extends LinearOpMode {
                     droprelic = true;
                     relicextend.setPower(.79);
                     sleep(400);
-                    relicvertical.setPower(-.5);
+                    relicvertical.setPosition(-.5);
                     relicextend.setPower(0.79);
                     sleep(400);
                     relictwist.setPower(.79);

@@ -36,6 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -81,6 +82,7 @@ public class BLUECLOSEBEASTMODE extends LinearOpMode {
     private DcMotor armDrive3;
     private DcMotor armDrive4;
     private VuforiaTrackable relicTemplate = null;
+    private DigitalChannel touchsensor2;
 
     //private TouchSensor digitaltouch=null;
     @Override
@@ -103,7 +105,7 @@ public class BLUECLOSEBEASTMODE extends LinearOpMode {
         armDrive2 = hardwareMap.get(DcMotor.class, "armmotor2");
         armDrive3 = hardwareMap.get(DcMotor.class, "armmotor3");
         armDrive4 = hardwareMap.get(DcMotor.class, "armmotor4");
-
+touchsensor2=hardwareMap.get(DigitalChannel.class,"touchsensor2");
         //digitaltouch=hardwareMap.get(TouchSensor.class, "digitaltouch")
 
         armDrive2.setDirection(DcMotor.Direction.FORWARD);
@@ -163,34 +165,36 @@ public class BLUECLOSEBEASTMODE extends LinearOpMode {
 
             //   sleep(1000);
             jewelextend.setPosition(0.5);
-            sleep(1000);
+            sleep(150);
 
-jewelknock.setPosition(0.5);
-sleep(1000);
+            jewelknock.setPosition(0.5);
+            sleep(150);
             jewelextend.setPosition(0.275);
-            sleep(1000);
+            sleep(500);
 
-            if (colorsensor.red() > colorsensor.blue()) {
 
-                jewelknock.setPosition(0.3);
-                sleep(700);
-                jewelextend.setPosition(0.5);
-                sleep(500);
-                jewelknock.setPosition(0.5);
-                sleep(750);
-                jewelextend.setPosition(.8);
-                sleep(600);
-            } else {
-                jewelknock.setPosition(0.7);
-                sleep(1000);
+            if (colorsensor.red() < colorsensor.blue()) {
+
+                jewelknock.setPosition(0.4);
+                sleep(350);
                 jewelextend.setPosition(0.6);
-                sleep(1000);
+                sleep(650);
                 jewelknock.setPosition(0.5);
-                sleep(600);
+                sleep(350);
                 jewelextend.setPosition(.8);
-                sleep(400);
-            }
+                sleep(350);
+            } else {
+                jewelknock.setPosition(0.6);
+                sleep(350);
+                jewelextend.setPosition(0.6);
+                sleep(650);
+                jewelknock.setPosition(0.5);
+                sleep(350);
+                jewelextend.setPosition(.8);
+                sleep(350);
 
+
+            }
             while (vuMark == RelicRecoveryVuMark.UNKNOWN && vuTries > 0) {
                 vuMark = RelicRecoveryVuMark.from(relicTemplate);
                 vuTries -= 1;
@@ -323,44 +327,111 @@ sleep(1000);
             armDrive3.setPower(0);
             armDrive4.setPower(0);
 
-            while (Math.abs(getHeading() + 66) > HEADING_EPSILON) {
-                setDriveSpeed(TURN_SPEED, -TURN_SPEED);
+            if (touchsensor2.getState()==false){
+
+                while (Math.abs(getHeading() + 66) > HEADING_EPSILON) {
+                    setDriveSpeed(TURN_SPEED, -TURN_SPEED);
+                }
+
+                setDriveSpeed(0.7, 0.7);
+                armDrive3.setPower(-0.95);
+                armDrive4.setPower(0.95);
+                sleep(1450);
+
+                armDrive3.setPower(0);
+                armDrive4.setPower(0);
+
+                setDriveSpeed(0, 0);
+
+                armDrive1.setPower(-0.8);
+                armDrive2.setPower(-0.8);
+                sleep(600);
+                armDrive1.setPower(0);
+                armDrive2.setPower(0);
+
+                armDrive1.setPower(-0.8);
+                armDrive2.setPower(-0.8);
+
+                setDriveSpeed(0.3, 0.3);
+                sleep(300);
+
+                setDriveSpeed(0, 0);
+
+                armDrive1.setPower(0);
+                armDrive2.setPower(0);
+
+                setDriveSpeed(-0.27, -0.27);
+                armDrive1.setPower(-1);
+                armDrive2.setPower(-1);
+                sleep(200);
+
+                firsttime = 0;
+            }else{
+                setBackSpeed(0.2,0.2);
+                sleep(200);
+                while (Math.abs(getHeading() -140) > HEADING_EPSILON) {
+                    setDriveSpeed(-TURN_SPEED*0.7, TURN_SPEED*0.7);
+                }
+                setDriveSpeed(0.3,0.3);
+                sleep(300);
+
+                armDrive1.setPower(0.8);
+                armDrive2.setPower(0.8);
+                sleep(1009);
+
+                setDriveSpeed(0, 0);
+                armDrive1.setPower(0);
+                armDrive2.setPower(0);
+                sleep(400);
+
+                //          armDrive1.setPower(0.8);
+                armDrive2.setPower(0.8);
+                sleep(850);
+
+
+                armDrive1.setPower(0);
+                armDrive2.setPower(0);
+                sleep(300);
+                while (Math.abs(getHeading() + 66) > HEADING_EPSILON) {
+                    setDriveSpeed(TURN_SPEED, -TURN_SPEED);
+                }
+
+                setDriveSpeed(0.7, 0.7);
+                armDrive3.setPower(-0.95);
+                armDrive4.setPower(0.95);
+                sleep(1450);
+
+                armDrive3.setPower(0);
+                armDrive4.setPower(0);
+
+                setDriveSpeed(0, 0);
+
+                armDrive1.setPower(-0.8);
+                armDrive2.setPower(-0.8);
+                sleep(600);
+                armDrive1.setPower(0);
+                armDrive2.setPower(0);
+
+                armDrive1.setPower(-0.8);
+                armDrive2.setPower(-0.8);
+
+                setDriveSpeed(0.3, 0.3);
+                sleep(300);
+
+                setDriveSpeed(0, 0);
+
+                armDrive1.setPower(0);
+                armDrive2.setPower(0);
+
+                setDriveSpeed(-0.27, -0.27);
+                armDrive1.setPower(-1);
+                armDrive2.setPower(-1);
+                sleep(200);
+
+
+
             }
-
-            setDriveSpeed(0.7, 0.7);
-            armDrive3.setPower(-0.95);
-            armDrive4.setPower(0.95);
-            sleep(1450);
-
-            armDrive3.setPower(0);
-            armDrive4.setPower(0);
-
-            setDriveSpeed(0, 0);
-
-            armDrive1.setPower(-0.8);
-            armDrive2.setPower(-0.8);
-            sleep(600);
-            armDrive1.setPower(0);
-            armDrive2.setPower(0);
-
-            armDrive1.setPower(-0.8);
-            armDrive2.setPower(-0.8);
-
-            setDriveSpeed(0.3, 0.3);
-            sleep(300);
-
-            setDriveSpeed(0, 0);
-
-            armDrive1.setPower(0);
-            armDrive2.setPower(0);
-
-            setDriveSpeed(-0.27, -0.27);
-            armDrive1.setPower(-1);
-            armDrive2.setPower(-1);
-            sleep(200);
-
-            firsttime = 0;
-        }
+            }
     }
 
 

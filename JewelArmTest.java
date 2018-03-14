@@ -24,6 +24,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous ;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 @TeleOp(name = "Armtest", group = "Concept")
+@Disabled
 public class JewelArmTest extends LinearOpMode {
     CRServo relicexend;
     CRServo relictwist;

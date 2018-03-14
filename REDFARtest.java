@@ -228,7 +228,7 @@ public class REDFARtest extends LinearOpMode {
 
                 }
                 setDriveSpeed(-0.3, -0.3);
-                sleep(1000);
+                sleep(1250);
 
                 telemetry.addData("Color", "" + colorsensor2.red() + " / " + colorsensor2.green() + " / " + colorsensor2.blue());
                 telemetry.update();

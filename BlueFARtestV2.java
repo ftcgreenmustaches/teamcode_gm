@@ -160,10 +160,8 @@ public class BlueFARtestV2 extends LinearOpMode {
 
         double speed = 0;
         while (opModeIsActive() && firsttime ==1 ) {
-            sleep(2000);
             int vuTries = 10;
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-
 
 
             //   if (vuMark == RelicRecoveryVuMark.UNKNOWN)
@@ -171,43 +169,43 @@ public class BlueFARtestV2 extends LinearOpMode {
 
             //   sleep(1000);
             jewelextend.setPosition(0.5);
-            sleep(350);
+            sleep(150);
 
             jewelknock.setPosition(0.5);
-            sleep(350);
+            sleep(150);
             jewelextend.setPosition(0.275);
-            sleep(350);
+            sleep(500);
 
 
-            if (colorsensor.red() > colorsensor.blue()) {
+            if (colorsensor.red() < colorsensor.blue()) {
 
-                jewelknock.setPosition(0.3);
-                sleep(650);
-                jewelextend.setPosition(0.5);
+                jewelknock.setPosition(0.4);
                 sleep(350);
+                jewelextend.setPosition(0.6);
+                sleep(650);
                 jewelknock.setPosition(0.5);
                 sleep(350);
                 jewelextend.setPosition(.8);
                 sleep(350);
             } else {
-                jewelknock.setPosition(0.7);
-                sleep(650);
-                jewelextend.setPosition(0.6);
+                jewelknock.setPosition(0.6);
                 sleep(350);
+                jewelextend.setPosition(0.6);
+                sleep(650);
                 jewelknock.setPosition(0.5);
                 sleep(350);
                 jewelextend.setPosition(.8);
                 sleep(350);
+
+
             }
-
-            jewelextend.setPosition(1);
-            sleep(350);
-
             while (vuMark == RelicRecoveryVuMark.UNKNOWN && vuTries > 0) {
                 vuMark = RelicRecoveryVuMark.from(relicTemplate);
                 vuTries -= 1;
             }
 
+            jewelextend.setPosition(1);
+            sleep(350);
             setDriveSpeed(-0.35, -0.35);
             sleep(1000);
 
@@ -246,8 +244,8 @@ public class BlueFARtestV2 extends LinearOpMode {
             colorsensor2.green();
 
                 while (isGray()) {
-                    setDriveSpeed(0.25, 0.25);
-                    speed += 0.015;
+                    setDriveSpeed(0.35, 0.35);
+                    speed += 0.02;
                     sleep(100);
                     telemetry.addData("Color", "gray");
                     telemetry.update();
@@ -261,7 +259,7 @@ public class BlueFARtestV2 extends LinearOpMode {
 
             if (vuMark == RelicRecoveryVuMark.CENTER) {
                 setDriveSpeed(0.3,0.3);
-                sleep(1000);
+                sleep(1200);
                 telemetry.addData("CENTER", RelicRecoveryVuMark.CENTER);
                 telemetry.update();
                 while (Math.abs(getHeading() - 180 ) > HEADING_EPSILON){
@@ -287,7 +285,7 @@ public class BlueFARtestV2 extends LinearOpMode {
                 telemetry.addData("Unknown", 0);
                 telemetry.update();
                 setDriveSpeed(0.3, 0.3);
-                sleep(800);
+                sleep(1200);
                 while (Math.abs(getHeading() -180) > HEADING_EPSILON) {
                     setDriveSpeed(-TURN_SPEED, TURN_SPEED);
                 }
@@ -312,12 +310,18 @@ public class BlueFARtestV2 extends LinearOpMode {
             armDrive1.setPower(0);
             armDrive2.setPower(0);
 
-            setDriveSpeed(0, 0);
-            sleep(500);
-            firsttime = 0;
+            stopMotors();
+            idle();
+
         }
     }
+    public void stopMotors() {
+        setDriveSpeed(0, 0);
+        setBackSpeed(0, 0);
+        armDrive1.setPower(0);
+        armDrive2.setPower(0);
 
+    }
 
 
 
